@@ -1,0 +1,3 @@
+This is the user guide
+
+Will add the info after the rest of the code is done
