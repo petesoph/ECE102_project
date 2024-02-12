@@ -128,42 +128,80 @@ def light_off_on(light_data_vals):
     return light_data
 
 
-# Other functions
-def prisoner_trapdoor(prisoner_number):
-    # Opens the trapdoor for a specific prisoner
-    # Should also call a function from here to update the prisoner's cell...to empty
-    pass
+# Opens the trapdoor for a specific prisoner
+
+def prisoner_trapdoor(prisoner_or_cell_number, cells_prisoners):
+    # Calls function to get the index
+    # Updates the prisoner's cell...to empty
+    index_val = check_cell(prisoner_or_cell_number, cells_prisoners, 0)
+    if index_val != -1000:
+        cells_prisoners[index_val][1] = 0
+        print(f"Prisoner number {cells_prisoners[index_val][1]} in cell number {cells_prisoners[index_val][0]}"
+              f" has been trapdoored")
+    else:
+        print("Invalid prisoner or cell number")
+        return cells_prisoners
 
 
 def guard_trapdoor():
-    # Can call this if the guard does not remember his password 3x
-    # Maybe also have this one display a message and quit the program, as the guard will no longer be using it
-    pass
+    # Displays a message and exits the program
+    print("Guard is trapdoored")
+    close_terminal()
 
 
-def admit_visitor():
-    # Lets the guard unlock the door so someone can visit the prison
-    pass
+# Possible option for prison riot/escape
+# Just arms alarm and sets it off
+def panic_button(arm_val, alarm_act_val):
+    arm_val = alarm_act_val = 1
+    return arm_val, alarm_act_val
 
 
-def check_cell(cell_array_function1):
-    # Should open file w/ prisoner numbers (possible w/ saved numpy array? if not can just use .txt)
-    # Should prompt for cell number or prisoner number
-    # Then say either what prisoner/what cell
-    pass
+def check_cell(cell_pris_num, cell_array_function1, print_flag):
+    flag = 0
+    # Set index to -1000, will be flag in other functions
+    ret_index = -1000
+    # First check based on prisoner number (always 3 digits)
+    if cell_pris_num > 99:
+        for index in range((len(cell_array_function1[:, 0]) - 1)):
+            if cell_array_function1[index][1] == cell_pris_num:
+                flag = 1
+                if print_flag == 1:
+                    print(f"Prisoner number {cell_pris_num} is in cell {cell_array_function1[index][0]}")
+                    ret_index = index
+                break
+        if flag == 0:
+            print(f"Prisoner number {cell_pris_num} not found")
+            # Sets index to some invalid number
+    # Then check based on cell number:
+    else:
+        for index in range((len(cell_array_function1[:, 0]) - 1)):
+            if cell_array_function1[index][0] == cell_pris_num:
+                flag = 1
+                if print_flag == 1:
+                    print(f"Cell number {cell_pris_num} holds prisoner number {cell_array_function1[index][1]}")
+                    ret_index = index
+                break
+        if flag == 0:
+            print(f"Cell number {cell_pris_num} not found")
+    return ret_index
 
 
-def update_cell(cell_array_function2, cell_num, trapdoor_flag):
-    # This function will be used either to manually update cell info or automatically after trapdoor
-    # So use trapdoor_flag to know if it is the manual (user input) option or the automatic option
-    pass
+def update_cell(cell_prisoner_num, cell_array_function2, update_val):
+    # First call function to get index
+    index_num = check_cell(cell_prisoner_num, cell_array_function2, 0)
+    if index_num != -1000:
+        if update_val > 0:
+            if update_val > 99:
+                cell_array_function2[index_num][1] = update_val
+            else:
+                cell_array_function2[index_num][0] = update_val
+        else:
+            print("Invalid update value")
+    else:
+        print("Prisoner or cell not found, cannot update")
+    return cell_array_function2
 
 
-def panic_button():
-    # Possible option for prison riot/escape?
-    pass
-
-        
 def valid_num():
     try:
         usr_input = int(input('Enter number here: '))
