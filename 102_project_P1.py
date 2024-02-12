@@ -1,5 +1,6 @@
 import sys
 import numpy as np
+import pandas as pd
 
 # Rough working copy
 # Changed dictionaries to arrays
@@ -52,28 +53,34 @@ def close_terminal():
 
 
 # Checks sensors
-def sensor_check(sensor_array_func1):
-    print(f"Sensor ID   Sensor State")
-    for a in sensor_array_func1:
-        print(f"{sensor_array_func1[a][0]:<12}{sensor_array_func1[a][1]}")
+def sensor_check(sensor_data):
+    print (sensor_data)
+    
+    user_input = []
 
+    while user_input == []:
+        print()
+        print('Enter any key to return to main menu: ')
+        user_input = [str(input())]
+    
+        
 
 # Trigger individual sensors if armed
 # This is for user wanting to trigger the sensors
-def usr_sensor_trigger(sensor_array_func2, armed_state_func2, alarm_state_func2):
+def usr_sensor_trigger(sensor_data_func2, armed_state_func2, alarm_state_func2):
     # Only runs if alarm is armed (1 = armed, 0 = unarmed)
     tries = 0
     if armed_state_func2 == 1:
         # Asks for sensor ID, checks if it is a sensor
         usr_sensor = input("Enter the ID of the sensor to be checked: ")
-        while usr_sensor not in sensor_array_func2[0] and tries < 5:
+        while usr_sensor not in sensor_data_func2[0] and tries < 5:
             usr_sensor = input("Please enter the ID of a sensor: ")
             tries += 1
         # For each sensor, 1 = triggered, 0 = not triggered
         # For alarm, 1 = ON, 0 = OFF
         if tries < 5:
-            index = sensor_array_func2[0].index(usr_sensor)
-            sensor_array_func2[index][0] = 1
+            index = sensor_data_func2[0].index(usr_sensor)
+            sensor_data_func2[index][0] = 1
             alarm_state_func2 = 1
         else:
             print("Out of tries!")
@@ -82,16 +89,16 @@ def usr_sensor_trigger(sensor_array_func2, armed_state_func2, alarm_state_func2)
     else:
         print("Cannot check sensors, alarm not armed")
     # Returns updated sensor array and updated alarm state
-    return sensor_array_func2, alarm_state_func2
+    return sensor_data_func2, alarm_state_func2
 
 
 # Triggering the sensor activates alarm if armed:
 # This is more for hardware connections
-def alarm_activate(sensor_array_func3, armed_state_func3, alarm_state_func3):
+def alarm_activate(sensor_data_func3, armed_state_func3, alarm_state_func3):
     # First check if armed (1 = armed, 0 = not armed)
     if armed_state_func3 == 1:
-        for a in sensor_array_func3:
-            sensor_state = sensor_array_func3.get(a)
+        for a in sensor_data_func3:
+            sensor_state = sensor_data_func3.get(a)
             if sensor_state == 1:
                 alarm_state_func3 = 1
     else:
@@ -137,30 +144,42 @@ def arm_alarm(armed_state_func4):
 
 
 # Checks lights
-def light_check(light_array_func5):
-    print(f"Light ID   Light State")
-    for a in light_array_func5:
-        print(f"{light_array_func5[a][0]:<12}{light_array_func5[a][1]}")
+def light_check(light_data_func5):
+    print(light_data)
+    
+    user_input = []
+
+    while user_input == []:
+        print()
+        print('Enter any key to return to main menu: ')
+        user_input = [str(input())]
 
 
 # Turns lights off/on
-def light_off_on(light_array_func6):
-    tries = 0
-    light_name = input("Please enter the name of the light: ")
-    while light_name not in light_array_func6[0] and tries < 5:
-        light_name = input("Please enter the ID of a sensor: ")
-        tries += 1
-    if tries < 5:
-        index = light_array_func6[0].index(light_name)
-        if light_array_func6[index][0] == 'ON':
-            lights_y_n = input("The light is ON. Would you like to turn it OFF? (Y/N): ")
-            if lights_y_n == 'Y' or lights_y_n == 'y':
-                light_array_func6[index][0] = 'OFF'
-        else:
-            lights_y_n = input("The light is OFF. Would you like to turn it ON? (Y/N): ")
-            if lights_y_n == 'Y' or lights_y_n == 'y':
-                light_array_func6[index][0] = 'ON'
-    return light_array_func6
+def light_off_on(light_data):
+   light_name = input("Reference list: outdoor, room1, room2, room3. \n \
+Please enter the name of the light: ")
+   while light_name not in light_data:
+       print()
+       light_name = input("Ivalid input. Please enter an existing light name: ")
+   # 1 = ON, 0 = OFF
+   if light_data.get(light_name) == 1:
+       lights_y_n = input("The light is ON. Would you like to turn it OFF? (Y/N): ")
+       while lights_y_n not in {'Y', 'y', 'N', 'n'}:
+           print()
+           print('Invalid input, try again.')
+           lights_y_n = input("The light is ON. Would you like to turn it OFF? (Y/N): ")
+       if lights_y_n == 'Y' or lights_y_n == 'y':
+           light_data.update({light_name, 0})
+   else:
+       lights_y_n = input("The light is OFF. Would you like to turn it ON? (Y/N): ")
+       while lights_y_n not in {'Y', 'y', 'N', 'n'}:
+           print()
+           print('Invalid input, try again.')
+           lights_y_n = input("The light is ON. Would you like to turn it OFF? (Y/N): ")
+       if lights_y_n == 'Y' or lights_y_n == 'y':
+           light_data.update({light_name, 1})
+   return light_data
 
 
 # Other functions
@@ -198,42 +217,90 @@ def panic_button():
     # Possible option for prison riot/escape?
     pass
 
+    
+    
+def valid_num():
+    try:
+        usr_input = int(input('Enter number here: '))
+        print()
+        
+        while usr_input < 0 or usr_input > 7:
+            print('Invalid input. Try again.')
+            print()
+            usr_input = int(input('Enter number here: '))
+            
+        if usr_input == 1:
+            sensor_check(sensor_data)
+        elif usr_input == 2:
+            usr_sensor_trigger(sensor_data, armed_state, alarm_state)
+        elif usr_input == 3:
+            light_check(light_data)
+        elif usr_input == 4:
+            light_off_on(light_data)
+        elif usr_input == 5:
+            arm_alarm(armed_state)
+        elif usr_input == 6:
+            arm_alarm(armed_state)
+        elif usr_input == 7:
+            user_help()
+        elif usr_input == 0:
+            close_terminal()
+            help()
+    except ValueError:
+        print('Invalid input. Try again.')
+        print()
+        valid_num()      
+        
 
 # Then this is the main menu of the program:
-sensor_array = np.array([["Windows", 0], ["Main Door", 0], ["Cell 1", 0], ["Cell 2", 0], ["Cell 3", 0]])
+sensor_data = pd.DataFrame(
+    data= [["Windows", 0], ["Main Door", 0], ["Cell 1", 0], ["Cell 2", 0], ["Cell 3", 0]],
+    columns= ['Sensor location', 'Status'])
 # TODO: change these two so they read from a file
-light_array = np.array([["Main Light", "ON"], ["Main Light", "ON"], ["Main Light", "ON"]])
+light_data = pd.DataFrame(
+    data=[["Main Light", 1], ["Main Light", 1], ["Main Light", 1]],
+    columns= ['Light location', 'Status'])
 # Cell array entry is [cell #, prisoner #], w/ prisoner number == 0 => cell is empty
-cell_array = np.array([[1, 123], [2, 350], [3, 0]])
+cell_data = pd.DataFrame(
+    data= [[1, 123], [2, 350], [3, 0]],
+    columns= ['Cell location', 'Status'])
+
 armed_state = 0
 alarm_state = 0
 
+print()
+print('Hello, welcome to HADES:') 
+print('Home Assistant (Defense and Extermination System)')
+print()
+print('Before you can access the main menu,')
+password = str(input('please enter the password: '))
+
+attempts = 2
+
+while attempts >= 0:
+    if password == '0451':
+        break
+    elif attempts > 0:
+        attempts -= 1
+        print()
+        print(f'Incorrect password. {attempts + 1} attempts remaining.')
+        password = str(input('please enter the password: '))
+    else:
+        print()
+        print('Password attempt limit reached...')
+        print('BON VOYAGE!')
+        guard_trapdoor(0)
+        sys.exit()  
+
+
 while True:
-    print("Main Menu\nOptions:")
-    print("Option 1: Check sensors\nOption 2: Trigger sensors")
-    print("Option 3: Check lights\nOption 4: Turn lights off/on")
-    print("Option 5: Check if armed\nOption 6: Arm/disarm")
-    print("Enter 7 for help, enter 0 to exit")
-    input_flag = 0
-    usr_input = input("Please enter the # of the option you want: ")
-    while input_flag == 0:
-        if usr_input == '1':
-            sensor_check(sensor_array)
-        elif usr_input == '2':
-            sensor_array, alarm_state = usr_sensor_trigger(sensor_array, armed_state, alarm_state)
-        elif usr_input == '3':
-            light_check(light_array)
-        elif usr_input == '4':
-            light_array = light_off_on(light_array)
-        elif usr_input == '5':
-            armed_state = arm_alarm(armed_state)
-        elif usr_input == '6':
-            armed_state = arm_alarm(armed_state)
-        elif usr_input == '7':
-            user_help()
-        elif usr_input == '0':
-            close_terminal()
-        else:
-            input_flag = 0
-            usr_input = input("Please enter a valid input: ")
-        input_flag += 1
+    print()
+    print('Welcome. Press the corresponding numbers to access HADES controls.')
+    print()
+    print('    -------------------- Main Menu ---------------------\n \
+    1) Check sensors         | 5) Check if armed   \n \
+    2) Trigger sensors       | 6) Arm/disarm       \n \
+    3) Check lights          | 7) Help             \n \
+    4) Turn lights off/on    | 0) Exit                 ')
+    
+    valid_num()
