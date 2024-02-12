@@ -1,42 +1,5 @@
 import sys
-import numpy as np
 import pandas as pd
-
-# Rough working copy
-# Changed dictionaries to arrays
-# Added some places for extra features
-
-# Req. features:
-# help command prints instructions for terminal
-# exit command closes python script cleanly
-# Able to check state of sensors
-# Able to trigger individual sensors
-# Triggering sensor activates alarm (only when armed)
-# Able to check state of lights
-# Able to turn lights off/on
-# Able to check if alarm is armed
-# Able to arm alarm with the passcode 0451
-
-# Optional features (need ideally 6)
-# Simulate/control lights for multiple rooms
-# Option to change passcode
-# Simulate 'more ambitious device'
-# Remember light state when open/close program
-
-# Other optional feature options
-# Trapdoor for prisoners
-# Trigger guard trapdoor after password tries is maxed out
-# Guard login/logout
-# Check/update prisoner number for a cell
-# Allow a visitor into the prison
-# Anything else
-
-# General todo:
-# Change lights to read/write from/to file
-# Fill in extra functions
-# Check that functions are correctly connected to each other (e.g. 5 password fails => call guard trapdoor function)
-# Update main program menu (once functions are finalized)
-# Write user manual (once everything else is finalized)
 
 
 # Help function
@@ -53,16 +16,9 @@ def close_terminal():
 
 
 # Checks sensors
-def sensor_check(sensor_data):
-    print (sensor_data)
-    
-    user_input = []
-
-    while user_input == []:
-        print()
-        print('Enter any key to return to main menu: ')
-        user_input = [str(input())]
-    
+def sensor_check(sensor_data_check):
+    print(sensor_data_check)
+    usr_input = input('Enter any key to return to main menu: ')
         
 
 # Trigger individual sensors if armed
@@ -146,79 +102,106 @@ def arm_alarm(armed_state_func4):
 # Checks lights
 def light_check(light_data_func5):
     print(light_data)
-    
-    user_input = []
-
-    while user_input == []:
-        print()
-        print('Enter any key to return to main menu: ')
-        user_input = [str(input())]
+    user_input = input('Enter any key to return to main menu: ')
 
 
 # Turns lights off/on
-def light_off_on(light_data):
-   light_name = input("Reference list: outdoor, room1, room2, room3. \n \
-Please enter the name of the light: ")
-   while light_name not in light_data:
-       print()
-       light_name = input("Ivalid input. Please enter an existing light name: ")
-   # 1 = ON, 0 = OFF
-   if light_data.get(light_name) == 1:
-       lights_y_n = input("The light is ON. Would you like to turn it OFF? (Y/N): ")
-       while lights_y_n not in {'Y', 'y', 'N', 'n'}:
-           print()
-           print('Invalid input, try again.')
-           lights_y_n = input("The light is ON. Would you like to turn it OFF? (Y/N): ")
-       if lights_y_n == 'Y' or lights_y_n == 'y':
-           light_data.update({light_name, 0})
-   else:
-       lights_y_n = input("The light is OFF. Would you like to turn it ON? (Y/N): ")
-       while lights_y_n not in {'Y', 'y', 'N', 'n'}:
-           print()
-           print('Invalid input, try again.')
-           lights_y_n = input("The light is ON. Would you like to turn it OFF? (Y/N): ")
-       if lights_y_n == 'Y' or lights_y_n == 'y':
-           light_data.update({light_name, 1})
-   return light_data
+def light_off_on(light_data_vals):
+    light_name = input("Reference list: outdoor, room1, room2, room3. \nPlease enter the name of the light: ")
+    while light_name not in light_data_vals:
+        light_name = input("Ivalid input. Please enter an existing light name: ")
+    # 1 = ON, 0 = OFF
+    if light_data_vals.get(light_name) == 1:
+        lights_y_n = input("The light is ON. Would you like to turn it OFF? (Y/N): ")
+        while lights_y_n not in {'Y', 'y', 'N', 'n'}:
+            print('Invalid input, try again.')
+            lights_y_n = input("The light is ON. Would you like to turn it OFF? (Y/N): ")
+        if lights_y_n == 'Y' or lights_y_n == 'y':
+            light_data.update({light_name, 0})
+    else:
+        lights_y_n = input("The light is OFF. Would you like to turn it ON? (Y/N): ")
+        while lights_y_n not in {'Y', 'y', 'N', 'n'}:
+            print('Invalid input, try again.')
+            lights_y_n = input("The light is ON. Would you like to turn it OFF? (Y/N): ")
+        if lights_y_n == 'Y' or lights_y_n == 'y':
+            light_data.update({light_name, 1})
+    return light_data
 
 
-# Other functions
-def prisoner_trapdoor(prisoner_number):
-    # Opens the trapdoor for a specific prisoner
-    # Should also call a function from here to update the prisoner's cell...to empty
-    pass
+# Opens the trapdoor for a specific prisoner
+
+def prisoner_trapdoor(prisoner_or_cell_number, cells_prisoners):
+    # Calls function to get the index
+    # Updates the prisoner's cell...to empty
+    index_val = check_cell(prisoner_or_cell_number, cells_prisoners, 0)
+    if index_val != -1000:
+        cells_prisoners[index_val][1] = 0
+        print(f"Prisoner number {cells_prisoners[index_val][1]} in cell number {cells_prisoners[index_val][0]}"
+              f" has been trapdoored")
+    else:
+        print("Invalid prisoner or cell number")
+        return cells_prisoners
 
 
 def guard_trapdoor():
-    # Can call this if the guard does not remember his password 3x
-    # Maybe also have this one display a message and quit the program, as the guard will no longer be using it
-    pass
+    # Displays a message and exits the program
+    print("Guard is trapdoored")
+    close_terminal()
 
 
-def admit_visitor():
-    # Lets the guard unlock the door so someone can visit the prison
-    pass
+# Possible option for prison riot/escape
+# Just arms alarm and sets it off
+def panic_button(arm_val, alarm_act_val):
+    arm_val = alarm_act_val = 1
+    return arm_val, alarm_act_val
 
 
-def check_cell(cell_array_function1):
-    # Should open file w/ prisoner numbers (possible w/ saved numpy array? if not can just use .txt)
-    # Should prompt for cell number or prisoner number
-    # Then say either what prisoner/what cell
-    pass
+def check_cell(cell_pris_num, cell_array_function1, print_flag):
+    flag = 0
+    # Set index to -1000, will be flag in other functions
+    ret_index = -1000
+    # First check based on prisoner number (always 3 digits)
+    if cell_pris_num > 99:
+        for index in range((len(cell_array_function1[:, 0]) - 1)):
+            if cell_array_function1[index][1] == cell_pris_num:
+                flag = 1
+                if print_flag == 1:
+                    print(f"Prisoner number {cell_pris_num} is in cell {cell_array_function1[index][0]}")
+                    ret_index = index
+                break
+        if flag == 0:
+            print(f"Prisoner number {cell_pris_num} not found")
+            # Sets index to some invalid number
+    # Then check based on cell number:
+    else:
+        for index in range((len(cell_array_function1[:, 0]) - 1)):
+            if cell_array_function1[index][0] == cell_pris_num:
+                flag = 1
+                if print_flag == 1:
+                    print(f"Cell number {cell_pris_num} holds prisoner number {cell_array_function1[index][1]}")
+                    ret_index = index
+                break
+        if flag == 0:
+            print(f"Cell number {cell_pris_num} not found")
+    return ret_index
 
 
-def update_cell(cell_array_function2, cell_num, trapdoor_flag):
-    # This function will be used either to manually update cell info or automatically after trapdoor
-    # So use trapdoor_flag to know if it is the manual (user input) option or the automatic option
-    pass
+def update_cell(cell_prisoner_num, cell_array_function2, update_val):
+    # First call function to get index
+    index_num = check_cell(cell_prisoner_num, cell_array_function2, 0)
+    if index_num != -1000:
+        if update_val > 0:
+            if update_val > 99:
+                cell_array_function2[index_num][1] = update_val
+            else:
+                cell_array_function2[index_num][0] = update_val
+        else:
+            print("Invalid update value")
+    else:
+        print("Prisoner or cell not found, cannot update")
+    return cell_array_function2
 
 
-def panic_button():
-    # Possible option for prison riot/escape?
-    pass
-
-    
-    
 def valid_num():
     try:
         usr_input = int(input('Enter number here: '))
@@ -254,16 +237,15 @@ def valid_num():
 
 # Then this is the main menu of the program:
 sensor_data = pd.DataFrame(
-    data= [["Windows", 0], ["Main Door", 0], ["Cell 1", 0], ["Cell 2", 0], ["Cell 3", 0]],
-    columns= ['Sensor location', 'Status'])
-# TODO: change these two so they read from a file
+    data=[["Windows", 0], ["Main Door", 0], ["Cell 1", 0], ["Cell 2", 0], ["Cell 3", 0]],
+    columns=['Sensor location', 'Status'])
 light_data = pd.DataFrame(
     data=[["Main Light", 1], ["Main Light", 1], ["Main Light", 1]],
-    columns= ['Light location', 'Status'])
+    columns=['Light location', 'Status'])
 # Cell array entry is [cell #, prisoner #], w/ prisoner number == 0 => cell is empty
 cell_data = pd.DataFrame(
-    data= [[1, 123], [2, 350], [3, 0]],
-    columns= ['Cell location', 'Status'])
+    data=[[1, 123], [2, 350], [3, 0]],
+    columns=['Cell location', 'Status'])
 
 armed_state = 0
 alarm_state = 0
@@ -289,7 +271,7 @@ while attempts >= 0:
         print()
         print('Password attempt limit reached...')
         print('BON VOYAGE!')
-        guard_trapdoor(0)
+        guard_trapdoor()
         sys.exit()  
 
 
