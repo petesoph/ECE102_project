@@ -1,5 +1,42 @@
 import sys
-import pandas as pd
+import os.path as path
+
+
+# File opener function (to open saved light info and cell info)
+# Checks if file exists, if not, sets all lights ON or empty cells
+# If file exists, reads from file, stores in arrays
+def file_checker(file_name, default_array):
+    # First check if the file exists:
+    if path.isfile(file_name):
+        with open(file_name, 'w') as f:
+            temp_list = f.readlines()
+            # Double checks that the list isn't empty:
+            if temp_list:
+                n = 0
+                for line in temp_list:
+                    default_array[n][0] = line.split()[0]
+                    default_array[n][1] = line.split()[1]
+                    n += 1
+            else:
+                print("No info in file, returning defaults")
+    else:
+        # If file doesn't exist, will make the file
+        f = open(file_name, 'w')
+        print("Can't find file, returning defaults")
+    f.close()
+    return default_array
+
+
+# Also need to write to file before closing the program:
+def file_writer(lights_info, cells_info, lights_file_name, cells_file_name):
+    f = open(lights_file_name, 'w')
+    for entry in enumerate(lights_info):
+        f.write(f"{entry.split()[0]}\t{entry.split()[1]}\n")
+    f.close()
+    f = open(cells_file_name, 'w')
+    for entry in enumerate(cells_info):
+        f.write(f"{entry.split()[0]}\t{entry.split()[1]}\n")
+    f.close()
 
 
 # Help function
@@ -17,7 +54,9 @@ def close_terminal():
 
 # Checks sensors
 def sensor_check(sensor_data_check):
-    print(sensor_data_check)
+    print(f"Sensor ID   Sensor State")
+    for n in range(len(sensor_data_check)):
+        print(f"{sensor_data_check[n][0]:<12}{sensor_data_check[n][1]}")
     usr_input = input('Enter any key to return to main menu: ')
         
 
@@ -49,17 +88,16 @@ def usr_sensor_trigger(sensor_data_func2, armed_state_func2, alarm_state_func2):
 
 
 # Triggering the sensor activates alarm if armed:
-# This is more for hardware connections
+# May change this
 def alarm_activate(sensor_data_func3, armed_state_func3, alarm_state_func3):
     # First check if armed (1 = armed, 0 = not armed)
     if armed_state_func3 == 1:
-        for a in sensor_data_func3:
-            sensor_state = sensor_data_func3.get(a)
-            if sensor_state == 1:
+        for n in range(len(sensor_data_func3)):
+            if sensor_data_func3[n][1] == 1:
                 alarm_state_func3 = 1
     else:
         print("Cannot activate alarm, alarm not armed")
-    # Returns alarm state (no changes made to dictionary or armed state)
+    # Returns alarm state
     return alarm_state_func3
 
 
@@ -107,29 +145,27 @@ def light_check(light_data_func5):
 
 # Turns lights off/on
 def light_off_on(light_data_vals):
-    light_name = input("Reference list: outdoor, room1, room2, room3. \nPlease enter the name of the light: ")
-    while light_name not in light_data_vals:
-        light_name = input("Ivalid input. Please enter an existing light name: ")
-    # 1 = ON, 0 = OFF
-    if light_data_vals.get(light_name) == 1:
+    print("Reference list: Main Light, Cell 1, Cell 2, Cell 3")
+    light_name = input("Please enter the name of the light: ")
+    while light_name not in light_data_vals[0]:
+        light_name = input("Invalid input. Please enter an existing light name: ")
+    light_index = light_data_vals[0].index(light_name)
+    if light_data_vals[light_index][1] == "ON":
         lights_y_n = input("The light is ON. Would you like to turn it OFF? (Y/N): ")
         while lights_y_n not in {'Y', 'y', 'N', 'n'}:
-            print('Invalid input, try again.')
-            lights_y_n = input("The light is ON. Would you like to turn it OFF? (Y/N): ")
+            lights_y_n = input('Invalid input, try again.')
         if lights_y_n == 'Y' or lights_y_n == 'y':
-            light_data.update({light_name, 0})
+            light_data_vals[light_index][1] = "OFF"
     else:
         lights_y_n = input("The light is OFF. Would you like to turn it ON? (Y/N): ")
         while lights_y_n not in {'Y', 'y', 'N', 'n'}:
-            print('Invalid input, try again.')
-            lights_y_n = input("The light is ON. Would you like to turn it OFF? (Y/N): ")
+            lights_y_n = input('Invalid input, try again.')
         if lights_y_n == 'Y' or lights_y_n == 'y':
-            light_data.update({light_name, 1})
-    return light_data
+            light_data_vals[light_index][1] = "ON"
+    return light_data_vals
 
 
 # Opens the trapdoor for a specific prisoner
-
 def prisoner_trapdoor(prisoner_or_cell_number, cells_prisoners):
     # Calls function to get the index
     # Updates the prisoner's cell...to empty
@@ -137,7 +173,7 @@ def prisoner_trapdoor(prisoner_or_cell_number, cells_prisoners):
     if index_val != -1000:
         cells_prisoners[index_val][1] = 0
         print(f"Prisoner number {cells_prisoners[index_val][1]} in cell number {cells_prisoners[index_val][0]}"
-              f" has been trapdoored")
+              f" has been trapdoor-ed")
     else:
         print("Invalid prisoner or cell number")
         return cells_prisoners
@@ -145,7 +181,7 @@ def prisoner_trapdoor(prisoner_or_cell_number, cells_prisoners):
 
 def guard_trapdoor():
     # Displays a message and exits the program
-    print("Guard is trapdoored")
+    print("Guard is trapdoor-ed")
     close_terminal()
 
 
@@ -236,26 +272,20 @@ def valid_num():
         
 
 # Then this is the main menu of the program:
-sensor_data = pd.DataFrame(
-    data=[["Windows", 0], ["Main Door", 0], ["Cell 1", 0], ["Cell 2", 0], ["Cell 3", 0]],
-    columns=['Sensor location', 'Status'])
-light_data = pd.DataFrame(
-    data=[["Main Light", 1], ["Main Light", 1], ["Main Light", 1]],
-    columns=['Light location', 'Status'])
+# Sensor data (2d list)
+sensor_data = [["Windows", 0], ["Main Door", 0], ["Cell 1", 0], ["Cell 2", 0], ["Cell 3", 0], ["Metal detector", 0]]
+# Light array (2d list)
+light_data = [["Main Light", "ON"], ["Cell 1", "ON"], ["Cell 2", "ON"], ["Cell 3", "ON"]]
 # Cell array entry is [cell #, prisoner #], w/ prisoner number == 0 => cell is empty
-cell_data = pd.DataFrame(
-    data=[[1, 123], [2, 350], [3, 0]],
-    columns=['Cell location', 'Status'])
+cell_data = [[1, 123], [2, 350], [3, 0]]
 
 armed_state = 0
 alarm_state = 0
 
-print()
-print('Hello, welcome to HADES:') 
+print('Hello, welcome to HADES:')
 print('Home Assistant (Defense and Extermination System)')
-print()
 print('Before you can access the main menu,')
-password = str(input('please enter the password: '))
+password = input('please enter the password: ')
 
 attempts = 2
 
@@ -266,9 +296,8 @@ while attempts >= 0:
         attempts -= 1
         print()
         print(f'Incorrect password. {attempts + 1} attempts remaining.')
-        password = str(input('please enter the password: '))
+        password = input('please enter the password: ')
     else:
-        print()
         print('Password attempt limit reached...')
         print('BON VOYAGE!')
         guard_trapdoor()
