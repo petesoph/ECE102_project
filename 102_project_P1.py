@@ -8,7 +8,7 @@ import os.path as path
 def file_checker(file_name, default_array):
     # First check if the file exists:
     if path.isfile(file_name):
-        with open(file_name, 'w') as f:
+        with open(file_name, 'w+') as f:
             temp_list = f.readlines()
             # Double checks that the list isn't empty:
             if temp_list:
@@ -21,7 +21,7 @@ def file_checker(file_name, default_array):
                 print("No info in file, returning defaults")
     else:
         # If file doesn't exist, will make the file
-        f = open(file_name, 'w')
+        f = open(file_name, 'w+')
         print("Can't find file, returning defaults")
     f.close()
     return default_array
@@ -64,10 +64,11 @@ def close_terminal(sensors, lights, cells):
 
 # Checks sensors
 def sensor_check(sensor_data_check):
-    print(f"Sensor ID   Sensor State")
+    print("Sensor ID   Sensor State")
     for n in range(len(sensor_data_check)):
         print(f"{sensor_data_check[n][0]:<12}{sensor_data_check[n][1]}")
-    usr_input = input('Enter any key to return to main menu: ')
+    print()
+    input('Enter any key to return to main menu: ')
         
 
 # Trigger individual sensors if armed
@@ -93,6 +94,8 @@ def usr_sensor_trigger(sensor_data_func2, armed_state_func2, alarm_state_func2):
         # It is better to have a loop in the main body to ask if another sensor needs to be checked
     else:
         print("Cannot check sensors, alarm not armed")
+        print()
+        input('Enter any key to return to main menu: ')
     # Returns updated sensor array and updated alarm state
     return sensor_data_func2, alarm_state_func2
 
@@ -114,6 +117,7 @@ def alarm_activate(sensor_data_func3, armed_state_func3, alarm_state_func3):
 # Check if alarm is armed, arm if needed
 def arm_alarm(armed_state_func4, sensor, light, cell):
     # If alarm is off, user can arm
+    global armed_state
     if armed_state_func4 == 0:
         usr_entry = input("The alarm is not armed. Would you like to arm it? (Y/N): ")
         if usr_entry == 'Y' or usr_entry == 'y':
@@ -125,7 +129,7 @@ def arm_alarm(armed_state_func4, sensor, light, cell):
                     pass_entry = input("Incorrect. Please enter the passcode: ")
                     tries += 1
             if tries < 3:
-                armed_state_func4 = 1
+                armed_state = 1
             else:
                 # Password failure triggers guard trapdoor
                 print("Out of tries")
@@ -141,7 +145,7 @@ def arm_alarm(armed_state_func4, sensor, light, cell):
                     pass_entry = input("Incorrect. Please enter the passcode: ")
                     tries += 1
             if tries < 3:
-                armed_state_func4 = 0
+                armed_state = 0
             else:
                 # Password failure triggers guard trapdoor
                 print("Out of tries")
@@ -156,7 +160,7 @@ def light_check(light_data_func5):
     for n in range(len(light_data_func5[0, :])):
         print(f"{light_data_func5[n][0]}\t\t{light_data_func5[n][1]}")
     # Waits for user input to close
-    user_input = input('Enter any key to return to main menu: ')
+    input('Enter any key to return to main menu: ')
 
 
 # Turns lights off/on
