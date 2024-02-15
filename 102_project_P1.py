@@ -8,20 +8,21 @@ import os.path as path
 def file_checker(file_name, default_array):
     # First check if the file exists:
     if path.isfile(file_name):
-        with open(file_name, 'w+') as f:
+        with open(file_name, 'r') as f:
             temp_list = f.readlines()
             # Double checks that the list isn't empty:
             if temp_list:
                 n = 0
                 for line in temp_list:
-                    default_array[n][0] = line.split()[0]
-                    default_array[n][1] = line.split()[1]
+                    line_list = line.split(':')
+                    default_array[n][0] = line_list[0] + ':'
+                    default_array[n][1] = line_list[1].strip('\n')
                     n += 1
             else:
                 print("No info in file, returning defaults")
     else:
         # If file doesn't exist, will make the file
-        f = open(file_name, 'w+')
+        f = open(file_name, 'r')
         print("Can't find file, returning defaults")
     f.close()
     return default_array
@@ -32,18 +33,18 @@ def file_writer(sensors_info, lights_info, cells_info):
     global file_names_tuple
     # Sensors info
     f = open(file_names_tuple[0], 'w')
-    for entry in enumerate(sensors_info):
-        f.write(f"{entry.split()[0]}\t{entry.split()[1]}\n")
+    for entry in sensors_info:
+        f.write(f"{entry[0]}{entry[1]}\n")
     f.close()
     # Lights info
     f = open(file_names_tuple[1], 'w')
-    for entry in enumerate(lights_info):
-        f.write(f"{entry.split()[0]}\t{entry.split()[1]}\n")
+    for entry in lights_info:
+        f.write(f"{entry[0]}{entry[1]}\n")
     f.close()
     # Cells info
     f = open(file_names_tuple[2], 'w')
-    for entry in enumerate(cells_info):
-        f.write(f"{entry.split()[0]}\t{entry.split()[1]}\n")
+    for entry in cells_info:
+        f.write(f"{entry[0]}{entry[1]}\n")
     f.close()
 
 
@@ -78,7 +79,8 @@ def usr_sensor_trigger(sensor_data_func2, armed_state_func2, alarm_state_func2):
     tries = 0
     if armed_state_func2 == 1:
         # Asks for sensor ID, checks if it is a sensor
-        usr_sensor = input("Enter the ID of the sensor to be checked: ")
+        print('Reference list: Windows, Main Door, Cell 1, Cell 2, Cell 3, Metal Detector')
+        usr_sensor = input("Enter the ID of the sensor to be triggered: ")
         while usr_sensor not in sensor_data_func2[0] and tries < 5:
             usr_sensor = input("Please enter the ID of a sensor: ")
             tries += 1
@@ -90,6 +92,8 @@ def usr_sensor_trigger(sensor_data_func2, armed_state_func2, alarm_state_func2):
             alarm_state_func2 = 1
         else:
             print("Out of tries!")
+            print()
+            input('Enter any key to return to main menu: ')
         # This will only check one sensor
         # It is better to have a loop in the main body to ask if another sensor needs to be checked
     else:
@@ -299,11 +303,11 @@ def valid_num(sensor_data_menu, light_data_menu, cell_data_menu, armed_state_men
 # Then this is the main menu of the program:
 # Default arrays (if no data is available)
 # Sensor data (2d list)
-sensor_data = [["Windows", 0], ["Main Door", 0], ["Cell 1", 0], ["Cell 2", 0], ["Cell 3", 0], ["Metal detector", 0]]
+default_sensor_data = [["Windows:", 0], ["Main Door:", 0], ["Cell 1:", 0], ["Cell 2:", 0], ["Cell 3:", 0], ["Metal detector:", 0]]
 # Light array (2d list)
-light_data = [["Main Light", "ON"], ["Cell 1", "ON"], ["Cell 2", "ON"], ["Cell 3", "ON"]]
+default_light_data = [["Main Light:", "ON"], ["Cell 1:", "ON"], ["Cell 2:", "ON"], ["Cell 3:", "ON"]]
 # Cell array entry is [cell #, prisoner #], w/ prisoner number == 0 => cell is empty
-cell_data = [[1, 123], [2, 350], [3, 0]]
+default_cell_data = [['1:', 123], ['2:', 350], ['3:', 0]]
 
 armed_state = 0
 alarm_state = 0
@@ -311,9 +315,9 @@ alarm_state = 0
 # Before program starts, checks if file data is available and updates lights/sensors/cells
 # File names are:
 file_names_tuple = ("sensors_file.txt", "lights_file.txt", "cells_file.txt")
-sensor_data = file_checker("sensors_file.txt", sensor_data)
-light_data = file_checker("lights_file.txt", light_data)
-cell_data = file_checker("cells_file.txt", cell_data)
+sensor_data = file_checker("sensors_file.txt", default_sensor_data)
+light_data = file_checker("lights_file.txt", default_light_data)
+cell_data = file_checker("cells_file.txt", default_cell_data)
 
 print('Hello, welcome to HADES:')
 print('Home Assistant (Defense and Extermination System)')
@@ -337,8 +341,8 @@ while attempts >= 0:
 while True:
     print('\nWelcome. Press the corresponding numbers to access HADES controls.\n')
     print('    -------------------- Main Menu ---------------------\n \
-    1) Check sensors         | 5) Check if armed   \n \
-    2) Trigger sensors       | 6) Arm/disarm       \n \
+    1) Check sensors         | 5) Arm/disarm alarm \n \
+    2) Trigger sensors       | 6) PANIC!       \n \
     3) Check lights          | 7) Help             \n \
     4) Turn lights off/on    | 0) Exit                 ')
     
