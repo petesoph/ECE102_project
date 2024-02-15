@@ -69,9 +69,9 @@ def close_terminal(sensors, lights, cells):
 
 # Checks sensors
 def sensor_check(sensor_data_check):
-    print("Sensor ID   Sensor State")
+    print("Sensor ID      Sensor State")
     for n in range(len(sensor_data_check)):
-        print(f"{sensor_data_check[n][0]:<12}{sensor_data_check[n][1]}")
+        print(f"{sensor_data_check[n][0]:<15}{sensor_data_check[n][1]}")
     input('Enter any key to return to main menu: ')
         
 
@@ -82,14 +82,14 @@ def usr_sensor_trigger(sensor_data_func2, armed_state_func2, alarm_state_func2):
     tries = 0
     if armed_state_func2 == 1:
         # Asks for sensor ID, checks if it is a sensor
-        print('Sensor list: \'Windows\', \'Main Door\', \'Cell 1\', \'Cell 2\', \'Cell 3\', \'Metal Detector\'')
+        print('Sensor list: Windows, Main Door, Cell 1, Cell 2, Cell 3, Metal Detector')
         usr_sensor = input("Enter the ID of the sensor to be triggered: ")
         while tries < 5:
             # Iterates over sensors
             for n in range(len(sensor_data_func2)):
                 if usr_sensor == sensor_data_func2[n][0]:
-                    sensor_data_func2[n][1] = 1
-                    alarm_activate(armed_state, alarm_state, 0)
+                    sensor_data_func2[n][1] = '1'
+                    alarm_state_func2 = alarm_activate(armed_state_func2, alarm_state_func2, 0)
                     print(f"{usr_sensor} activated, alarm activated")
                     input("Press any key to return to menu")
                     return sensor_data_func2, alarm_state_func2
@@ -162,7 +162,7 @@ def arm_alarm(armed_state_func4, alarm_state_func4, sensor_func4, light, cell):
                 armed_state_func4 = 0
                 alarm_state_func4 = 0
                 for s in sensor_func4:
-                    s[1] = 0
+                    s[1] = '0'
                 print("Alarm disarmed, sensors reset")
                 input('Enter any key to return to main menu: ')
             else:
@@ -184,7 +184,7 @@ def light_check(light_data_func5):
 
 # Turns lights off/on
 def light_off_on(light_data_vals):
-    print("Reference list: \'Main Light\', \'Cell 1\', \'Cell 2\', \'Cell 3\'")
+    print("Reference list: Main Light, Cell 1, Cell 2, Cell 3")
     light_name = input("Please enter the name of the light: ")
     tries = 0
     # Give 3 tries, then end loop
@@ -219,9 +219,9 @@ def light_off_on(light_data_vals):
 
 # Opens the trapdoor for a specific prisoner
 def prisoner_trapdoor(cells_prisoners):
-    prisoner_or_cell_number = -1
+    prisoner_or_cell_number = "-1"
     tries_trapdoor = 0
-    while tries_trapdoor < 3 and prisoner_or_cell_number == -1:
+    while tries_trapdoor < 3 and prisoner_or_cell_number == "-1":
         try:
             prisoner_or_cell_number = int(input("Enter cell or prisoner number (as digits): "))
         except ValueError:
@@ -235,7 +235,7 @@ def prisoner_trapdoor(cells_prisoners):
     # Updates the prisoner's cell...to empty
     index_val = check_cell(prisoner_or_cell_number, cells_prisoners, 0)
     if index_val != -1000:
-        cells_prisoners[index_val][1] = 0
+        cells_prisoners[index_val][1] = '0'
         print(f"Prisoner number {cells_prisoners[index_val][1]} in cell number {cells_prisoners[index_val][0]}"
               f" has been trapdoor-ed")
         input('Enter any key to return to main menu: ')
@@ -258,22 +258,22 @@ def check_cell(cell_pris_num, cell_array_function1, print_flag):
     # Set index to -1000, will be flag in other functions
     ret_index = -1000
     # Cell/pris number of -1 => menu item 8
-    while tries < 3 and cell_pris_num == -1:
+    while tries < 3 and cell_pris_num == "-1":
         try:
-            cell_pris_num = int(input("Enter cell number (Options: 1, 2, or 3): "))
+            cell_pris_num = input("Enter cell number (Options: 1, 2, or 3): ")
         except ValueError:
             print("Please enter a number (digits only)")
         tries += 1
 
     # Cell/pris number of -2 => menu item 9
-    while tries < 3 and cell_pris_num == -2:
+    while tries < 3 and cell_pris_num == "-2":
         try:
-            cell_pris_num = int(input("Enter prisoner number (integer 3 digits or greater): "))
+            cell_pris_num = input("Enter prisoner number (3 digits or greater, or 0 to look for empty cell): ")
         except ValueError:
             print("Please enter a number (digits only)")
-        if cell_pris_num < 99 and cell_pris_num != -2 and cell_pris_num != 0:
+        if int(cell_pris_num) < 99 and int(cell_pris_num) != -2 and int(cell_pris_num) != 0:
             print("Prisoner numbers are always 100 or greater (or 0 for empty cell), try again")
-            cell_pris_num = -2
+            cell_pris_num = "-2"
         tries += 1
     if tries == 3:
         print("Out of tries")
@@ -281,33 +281,34 @@ def check_cell(cell_pris_num, cell_array_function1, print_flag):
         return ret_index
 
     # First check based on prisoner number (always 3 digits or more or 0)
-    if cell_pris_num > 99 or cell_pris_num == 0:
+    if int(cell_pris_num) > 99 or int(cell_pris_num) == 0:
         # Put 0 as special case as multiple cells can be 0
-        if cell_pris_num == 0:
+        if int(cell_pris_num) == 0:
             for index in range((len(cell_array_function1))):
-                if cell_array_function1[index][1] == 0:
+                if cell_array_function1[index][1] == '0':
                     flag = 1
-                    print(f"Cell {cell_array_function1[index][0]} is empty")
+                    print(f"Empty cell at: Cell {cell_array_function1[index][0]}")
+            input('Enter any key to return to main menu: ')
+        else:
+            for index in range((len(cell_array_function1))):
+                # Shouldn't need to validate as integer as update function does this
+                if cell_array_function1[index][1] == cell_pris_num:
+                    flag = 1
+                    # Don't need to check for print flag b/c this is never called from a function (always user)
+                    print(f"Prisoner number {cell_pris_num} is in cell {cell_array_function1[index][0]}")
                     input('Enter any key to return to main menu: ')
-        for index in range((len(cell_array_function1))):
-            # Shouldn't need to validate as integer as update function does this
-            if cell_array_function1[index][1] == int(cell_pris_num):
-                flag = 1
-                # Don't need to check for print flag b/c this is never called from a function (always user)
-                print(f"Prisoner number {cell_pris_num} is in cell {cell_array_function1[index][0]}")
-                input('Enter any key to return to main menu: ')
-                break
+                    break
         if flag == 0:
             print(f"Prisoner number {cell_pris_num} not found")
             input('Enter any key to return to main menu: ')
     # Then check based on cell number:
     else:
         for index in range((len(cell_array_function1))):
-            if cell_array_function1[index][0] == str(cell_pris_num):
+            if cell_array_function1[index][0] == cell_pris_num:
                 flag = 1
                 if print_flag == 1:
                     # Empty cell is special case
-                    if cell_array_function1[index][1] == 0:
+                    if cell_array_function1[index][1] == '0':
                         print(f"Cell number {cell_pris_num} is empty")
                     else:
                         print(f"Cell number {cell_pris_num} holds prisoner number {cell_array_function1[index][1]}")
@@ -346,16 +347,16 @@ def update_cell(cell_prisoner_num, cell_array_function2, update_val):
             print("Please enter a number (digits only)")
         try_val += 1
         if update_val < 100 and update_val != 0:
-            update_val = -1
+            update_val = '-1'
             print("Must be 0 or at least 3 digits, try again")
     if try_val == 3:
         print("Out of tries")
         input('Enter any key to return to main menu: ')
         return cell_array_function2
     # First call function to get index
-    index_num = check_cell(cell_prisoner_num, cell_array_function2, 0)
+    index_num = check_cell(str(cell_prisoner_num), cell_array_function2, 0)
     if index_num != -1000:
-        cell_array_function2[index_num][1] = update_val
+        cell_array_function2[index_num][1] = str(update_val)
         print("Data updated")
         input('Enter any key to return to main menu: ')
     else:
@@ -387,11 +388,11 @@ def valid_num(sensor_data_menu, light_data_menu, cell_data_menu, armed_state_men
         elif usr_input == 6:
             alarm_state_menu = alarm_activate(armed_state_menu, alarm_state_menu, 1)
         elif usr_input == 7:
-            cell_data_menu = update_cell(-1, cell_data_menu, -1)
+            cell_data_menu = update_cell("-1", cell_data_menu, -1)
         elif usr_input == 8:
-            temp_var = check_cell(-1, cell_data_menu, 1)
+            temp_var = check_cell("-1", cell_data_menu, 1)
         elif usr_input == 9:
-            temp_var = check_cell(-2, cell_data_menu, 1)
+            temp_var = check_cell("-2", cell_data_menu, 1)
         elif usr_input == 10:
             cell_data_menu = prisoner_trapdoor(cell_data_menu)
         elif usr_input == 11:
@@ -405,10 +406,10 @@ def valid_num(sensor_data_menu, light_data_menu, cell_data_menu, armed_state_men
 
 
 # Default arrays (if no data is available)
-default_sensor_data = [["Windows", 0], ["Main", 0], ["Cell 1", 0], ["Cell 2", 0], ["Cell 3", 0], ["Metal Detector", 0]]
+default_sensor_data = [["Windows", '0'], ["Main Door", '0'], ["Cell 1", '0'], ["Cell 2", '0'], ["Cell 3", '0'], ["Metal Detector", '0']]
 default_light_data = [["Main Light", "ON"], ["Cell 1", "ON"], ["Cell 2", "ON"], ["Cell 3", "ON"]]
 # Cell array entry is [cell #, prisoner #], w/ prisoner number == 0 => cell is empty
-default_cell_data = [['1', 123], ['2', 350], ['3', 0]]
+default_cell_data = [['1', '123'], ['2', '350'], ['3', '0']]
 armed_state = 0
 alarm_state = 0
 
@@ -443,12 +444,12 @@ while attempts >= 0:
 while True:
     print('\nWelcome. Press the corresponding numbers to access HADES controls.\n')
     print('    -------------------- Main Menu ---------------------\n \
-    1)  Check sensors         | 7)  Manually update prisoner in cell \n \
-    2)  Trigger sensors       | 8)  Check which prisoner in cell \n \
-    3)  Check lights          | 9)  Check cell number of prisoner \n \
-    4)  Turn lights off/on    | 10) Trapdoor a prisoner \n \
-    5)  Arm / disarm alarm    | 11) Help \n \
-    6)  PANIC!                | 0)  Exit \n')
+    1)  Check sensors                 | 7)  Manually update prisoner in cell \n \
+    2)  Trigger sensors               | 8)  Check which prisoner in cell \n \
+    3)  Check lights                  | 9)  Check cell number of prisoner \n \
+    4)  Turn lights off/on            | 10) Trapdoor a prisoner \n \
+    5)  Check / Arm / disarm alarm    | 11) Help \n \
+    6)  PANIC!                        | 0)  Exit \n')
     print(f'    ------------------ Alarm state: {alarm_state} ------------------')
 
     # Calls function for user menu choice
