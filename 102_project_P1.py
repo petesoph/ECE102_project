@@ -50,9 +50,12 @@ def file_writer(sensors_info, lights_info, cells_info):
 
 # Help function
 def user_help():
-    with open("user_guide.txt", 'r') as fin:
-        print(fin.read())
-    fin.close()
+    try:
+        with open("user_guide.txt", 'r') as fin:
+            print(fin.read())
+        fin.close()
+    except:
+        print('Oops! I am having trouble fetching the help guide... You\'re on your own.')
 
 
 # Closes the program; all program closes should go through this function (so there is no sys.exit() at program end)
