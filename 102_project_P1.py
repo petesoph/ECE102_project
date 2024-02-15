@@ -245,13 +245,13 @@ def check_cell(cell_pris_num, cell_array_function1, print_flag):
             print("Please enter a number (digits only)")
         tries += 1
 
-    # Cell/pris number of -2 => menu item 8
+    # Cell/pris number of -2 => menu item 9
     while tries < 3 and cell_pris_num == -2:
         try:
             cell_pris_num = int(input("Enter prisoner number (integer 3 digits or greater): "))
         except ValueError:
             print("Please enter a number (digits only)")
-        if cell_pris_num < 99 and cell_pris_num != -2:
+        if cell_pris_num < 99 and cell_pris_num != -2 and cell_pris_num != 0:
             print("Prisoner numbers are always 100 or greater, try again")
             cell_pris_num = -2
         tries += 1
@@ -260,25 +260,26 @@ def check_cell(cell_pris_num, cell_array_function1, print_flag):
         return ret_index
 
     # First check based on prisoner number (always 3 digits or more)
-    if cell_pris_num > 99:
-        for index in range((len(cell_array_function1[:, 0]) - 1)):
-            if cell_array_function1[index][1] == cell_pris_num:
+    if cell_pris_num > 99 or cell_pris_num == 0:
+        for index in range((len(cell_array_function1))):
+            # Shouldn't need to validate as integer as update function does this
+            if cell_array_function1[index][1] == int(cell_pris_num):
                 flag = 1
                 if print_flag == 1:
                     print(f"Prisoner number {cell_pris_num} is in cell {cell_array_function1[index][0]}")
-                    ret_index = index
+                ret_index = index
                 break
         if flag == 0:
             print(f"Prisoner number {cell_pris_num} not found")
             # Sets index to some invalid number
     # Then check based on cell number:
     else:
-        for index in range((len(cell_array_function1[:, 0]) - 1)):
-            if cell_array_function1[index][0] == "Cell " + str(cell_pris_num):
+        for index in range((len(cell_array_function1))):
+            if cell_array_function1[index][0] == str(cell_pris_num):
                 flag = 1
                 if print_flag == 1:
                     print(f"Cell number {cell_pris_num} holds prisoner number {cell_array_function1[index][1]}")
-                    ret_index = index
+                ret_index = index
                 break
         if flag == 0:
             print(f"Cell number {cell_pris_num} not found")
@@ -305,7 +306,7 @@ def update_cell(cell_prisoner_num, cell_array_function2, update_val):
         except ValueError:
             print("Please enter a number (digits only)")
         try_val += 1
-        if update_val < 100 and update_val == 0:
+        if update_val < 100 and update_val != 0:
             update_val = -1
             print("Must be 0 or at least 3 digits, try again")
     if try_val == 3:
@@ -314,13 +315,7 @@ def update_cell(cell_prisoner_num, cell_array_function2, update_val):
     # First call function to get index
     index_num = check_cell(cell_prisoner_num, cell_array_function2, 0)
     if index_num != -1000:
-        if update_val > 0:
-            if update_val > 99:
-                cell_array_function2[index_num][1] = update_val
-            else:
-                cell_array_function2[index_num][0] = update_val
-        else:
-            print("Invalid update value")
+        cell_array_function2[index_num][1] = update_val
     else:
         print("Prisoner or cell not found, cannot update")
     return cell_array_function2
