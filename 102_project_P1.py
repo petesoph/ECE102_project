@@ -70,7 +70,7 @@ def close_terminal(sensors, lights, cells):
 def sensor_check(sensor_data_check):
     print("Sensor ID   Sensor State")
     for n in range(len(sensor_data_check)):
-        print(f"{sensor_data_check[n][0]:<12}{sensor_data_check[n][1]}\n")
+        print(f"{sensor_data_check[n][0]:<12}{sensor_data_check[n][1]}")
     input('Enter any key to return to main menu: ')
         
 
@@ -124,8 +124,6 @@ def alarm_activate(armed_state_func3, alarm_state_func3, printflag):
 # Check if alarm is armed, arm if needed
 def arm_alarm(armed_state_func4, sensor_1, light, cell):
     # If alarm is off, user can arm
-    global armed_state
-    global alarm_state
     if armed_state_func4 == 0:
         usr_entry = input("The alarm is not armed. Would you like to arm it? (Y/N): ")
         if usr_entry == 'Y' or usr_entry == 'y':
@@ -137,7 +135,7 @@ def arm_alarm(armed_state_func4, sensor_1, light, cell):
                     pass_entry = input("Incorrect. Please enter the passcode: ")
                     tries += 1
             if tries < 3:
-                armed_state = 1
+                armed_state_func4 = 1
             else:
                 # Password failure triggers guard trapdoor
                 print("Out of tries")
@@ -153,8 +151,8 @@ def arm_alarm(armed_state_func4, sensor_1, light, cell):
                     pass_entry = input("Incorrect. Please enter the passcode: ")
                     tries += 1
             if tries < 3:
-                armed_state = 0
-                alarm_state = 0
+                armed_state_func4 = 0
+                armed_state_func4 = 0
             else:
                 # Password failure triggers guard trapdoor
                 print("Out of tries")
@@ -167,19 +165,19 @@ def arm_alarm(armed_state_func4, sensor_1, light, cell):
 def light_check(light_data_func5):
     print("Light Name\t\tON/OFF")
     for n in range(len(light_data_func5)):
-        print(f"{light_data_func5[n][0]}\t\t{light_data_func5[n][1]}")
+        print(f"{light_data_func5[n][0]:9}\t\t{light_data_func5[n][1]}")
     # Waits for user input to close
     input('Enter any key to return to main menu: ')
 
 
 # Turns lights off/on
 def light_off_on(light_data_vals):
-    print("Reference list: \'Main Light:\', \'Cell 1:\', \'Cell 2:\', \'Cell 3:\'")
+    print("Reference list: \'Main Light\', \'Cell 1\', \'Cell 2\', \'Cell 3\'")
     light_name = input("Please enter the name of the light: ")
     tries = 0
     # Give 3 tries, then end loop
     while tries < 3:
-        if any(light_name == light[0] for light in light_data_vals):
+        if any(light_name == light_ref[0] for light_ref in light_data_vals):
             break
         light_name = input("Invalid input. Please enter an existing light name: ")
         tries += 1
@@ -367,10 +365,10 @@ def valid_num(sensor_data_menu, light_data_menu, cell_data_menu, armed_state_men
 
 
 # Default arrays (if no data is available)
-default_sensor_data = [["Windows:", 0], ["Main Door:", 0], ["Cell 1:", 0], ["Cell 2:", 0], ["Cell 3:", 0], ["Metal Detector:", 0]]
-default_light_data = [["Main Light:", "ON"], ["Cell 1:", "ON"], ["Cell 2:", "ON"], ["Cell 3:", "ON"]]
+default_sensor_data = [["Windows", 0], ["Main Door", 0], ["Cell 1", 0], ["Cell 2", 0], ["Cell 3", 0], ["Metal Detector", 0]]
+default_light_data = [["Main Light", "ON"], ["Cell 1", "ON"], ["Cell 2", "ON"], ["Cell 3", "ON"]]
 # Cell array entry is [cell #, prisoner #], w/ prisoner number == 0 => cell is empty
-default_cell_data = [['1:', 123], ['2:', 350], ['3:', 0]]
+default_cell_data = [['1', 123], ['2', 350], ['3', 0]]
 armed_state = 0
 alarm_state = 0
 
@@ -413,13 +411,6 @@ while True:
     6)  PANIC!                | 0)  Exit \n')
     print(f'    ------------------ Alarm state: {alarm_state} ------------------')
 
-    # TODO: check if we need this, I'm not sure it's useful
-    if armed_state == 1:
-        for sensor in sensor_data:
-            sensor[1] = '1'
-    else:
-        for sensor in sensor_data:
-            sensor[1] = '0'
     # Calls function for user menu choice
     sensor_data, light_data, cell_data, armed_state, alarm_state = valid_num(sensor_data, light_data, cell_data, armed_state, alarm_state)
     
