@@ -73,7 +73,7 @@ def sensor_check(sensor_data_check):
         
 
 # Trigger individual sensors if armed
-# This is for user wanting to trigger the sensors
+# This is for user wanting to trigger the alarm through an individual sensor
 def usr_sensor_trigger(sensor_data_func2, armed_state_func2, alarm_state_func2):
     # Only runs if alarm is armed (1 = armed, 0 = unarmed)
     tries = 0
@@ -82,24 +82,21 @@ def usr_sensor_trigger(sensor_data_func2, armed_state_func2, alarm_state_func2):
         print('Reference list: \'Windows:\', \'Main Door:\', \'Cell 1:\', \'Cell 2:\', \'Cell 3:\', \'Metal Detector:\'')
         usr_sensor = input("Enter the ID of the sensor to be triggered: ")
         while tries < 5:
-            if any(usr_sensor == sensor_data_func2[0] for sensor in sensor_data_func2):
+            if any(usr_sensor == sensor[0] for sensor in sensor_data_func2):
                 break
             usr_sensor = input("Please enter the ID of a sensor: ")
             tries += 1
-        # For each sensor, 1 = triggered, 0 = not triggered
-        # For alarm, 1 = ON, 0 = OFF
+
         if tries < 5:
-            index = sensor_data_func2[0].index(usr_sensor)
-            sensor_data_func2[index][0] = 1
-            alarm_state_func2 = 1
+            print()
+            alarm_activate(armed_state, alarm_state)
+
         else:
             print("Out of tries!")
             print()
             input('Enter any key to return to main menu: ')
-        # This will only check one sensor
-        # It is better to have a loop in the main body to ask if another sensor needs to be checked
     else:
-        print("Cannot check sensors, alarm not armed")
+        print("Cannot trigger sensors, alarm not armed")
         print()
         input('Enter any key to return to main menu: ')
     # Returns updated sensor array and updated alarm state
@@ -108,14 +105,19 @@ def usr_sensor_trigger(sensor_data_func2, armed_state_func2, alarm_state_func2):
 
 # Triggering the sensor activates alarm if armed:
 # May change this
-def alarm_activate(sensor_data_func3, armed_state_func3, alarm_state_func3):
+def alarm_activate(armed_state_func3, alarm_state_func3):
     # First check if armed (1 = armed, 0 = not armed)
+    global alarm_state
     if armed_state_func3 == 1:
-        for n in range(len(sensor_data_func3)):
-            if sensor_data_func3[n][1] == 1:
-                alarm_state_func3 = 1
+        answer = input('Are you sure you wish to PANIC? (Y/N): ')
+        print()
+        if answer == 'y' or 'Y':
+            print('WEEE WOOO WEEE WOOO WEEE...')
+            alarm_state = 1
     else:
         print("Cannot activate alarm, alarm not armed")
+        print()
+        input('Enter any key to return to main menu')
     # Returns alarm state
     return alarm_state_func3
 
@@ -124,6 +126,7 @@ def alarm_activate(sensor_data_func3, armed_state_func3, alarm_state_func3):
 def arm_alarm(armed_state_func4, sensor, light, cell):
     # If alarm is off, user can arm
     global armed_state
+    global alarm_state
     if armed_state_func4 == 0:
         usr_entry = input("The alarm is not armed. Would you like to arm it? (Y/N): ")
         if usr_entry == 'Y' or usr_entry == 'y':
@@ -152,6 +155,7 @@ def arm_alarm(armed_state_func4, sensor, light, cell):
                     tries += 1
             if tries < 3:
                 armed_state = 0
+                alarm_state = 0
             else:
                 # Password failure triggers guard trapdoor
                 print("Out of tries")
@@ -217,13 +221,6 @@ def guard_trapdoor(sensor_list, light_list, cell_list):
     # Displays a message and exits the program
     print("Guard is trapdoor-ed")
     close_terminal(sensor_list, light_list, cell_list)
-
-
-# Possible option for prison riot/escape
-# Just arms alarm and sets it off
-def panic_button(arm_val, alarm_act_val):
-    arm_val = alarm_act_val = 1
-    return arm_val, alarm_act_val
 
 
 def check_cell(cell_pris_num, cell_array_function1, print_flag):
@@ -293,7 +290,7 @@ def valid_num(sensor_data_menu, light_data_menu, cell_data_menu, armed_state_men
         elif usr_input == 5:
             arm_alarm(armed_state_menu, sensor_data_menu, light_data_menu, cell_data_menu)
         elif usr_input == 6:
-            arm_alarm(armed_state_menu, sensor_data_menu, light_data_menu, cell_data_menu)
+            alarm_activate(armed_state_menu, alarm_state_menu)
         elif usr_input == 7:
             user_help()
         elif usr_input == 0:
@@ -304,15 +301,11 @@ def valid_num(sensor_data_menu, light_data_menu, cell_data_menu, armed_state_men
         valid_num(sensor_data_menu, light_data_menu, cell_data_menu, armed_state_menu, alarm_state_menu)
         
 
-# Then this is the main menu of the program:
 # Default arrays (if no data is available)
-# Sensor data (2d list)
-default_sensor_data = [["Windows:", 0], ["Main Door:", 0], ["Cell 1:", 0], ["Cell 2:", 0], ["Cell 3:", 0], ["Metal detector:", 0]]
-# Light array (2d list)
+default_sensor_data = [["Windows:", 0], ["Main Door:", 0], ["Cell 1:", 0], ["Cell 2:", 0], ["Cell 3:", 0], ["Metal Detector:", 0]]
 default_light_data = [["Main Light:", "ON"], ["Cell 1:", "ON"], ["Cell 2:", "ON"], ["Cell 3:", "ON"]]
 # Cell array entry is [cell #, prisoner #], w/ prisoner number == 0 => cell is empty
 default_cell_data = [['1:', 123], ['2:', 350], ['3:', 0]]
-
 armed_state = 0
 alarm_state = 0
 
@@ -325,7 +318,7 @@ cell_data = file_checker("cells_file.txt", default_cell_data)
 
 
 print('Hello, welcome to HADES:')
-print('Home Assistant (Defense and Extermination System)')
+print('Home Assistant, Defense, and Extermination System')
 print('Before you can access the main menu,')
 password = input('please enter the password: ')
 
@@ -342,7 +335,8 @@ while attempts >= 0:
         # Password fail triggers guard trapdoor
         print('Password attempt limit reached...\nBON VOYAGE!')
         guard_trapdoor(sensor_data, light_data, cell_data)
-
+        
+# Then this is the main menu of the program:
 while True:
     print('\nWelcome. Press the corresponding numbers to access HADES controls.\n')
     print('    -------------------- Main Menu ---------------------\n \
@@ -350,6 +344,7 @@ while True:
     2) Trigger sensors       | 6) PANIC!       \n \
     3) Check lights          | 7) Help             \n \
     4) Turn lights off/on    | 0) Exit                 ')
+    print(f'    ------------------ Alarm state: {alarm_state} ------------------')
     
     if armed_state == 1:
         for sensor in sensor_data:
@@ -357,6 +352,6 @@ while True:
     else:
         for sensor in sensor_data:
             sensor[1] = '0'
-    
+
     valid_num(sensor_data, light_data, cell_data, armed_state, alarm_state)
     
