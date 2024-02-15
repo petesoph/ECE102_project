@@ -233,11 +233,11 @@ def prisoner_trapdoor(cells_prisoners):
         return cells_prisoners
     # Calls function to get the index
     # Updates the prisoner's cell...to empty
-    index_val = check_cell(prisoner_or_cell_number, cells_prisoners, 0)
+    index_val = check_cell(str(prisoner_or_cell_number), cells_prisoners, 0)
     if index_val != -1000:
-        cells_prisoners[index_val][1] = '0'
         print(f"Prisoner number {cells_prisoners[index_val][1]} in cell number {cells_prisoners[index_val][0]}"
               f" has been trapdoor-ed")
+        cells_prisoners[index_val][1] = '0'
         input('Enter any key to return to main menu: ')
         return cells_prisoners
     else:
@@ -296,7 +296,9 @@ def check_cell(cell_pris_num, cell_array_function1, print_flag):
                     flag = 1
                     # Don't need to check for print flag b/c this is never called from a function (always user)
                     print(f"Prisoner number {cell_pris_num} is in cell {cell_array_function1[index][0]}")
-                    input('Enter any key to return to main menu: ')
+                    if print_flag == 1:
+                        input('Enter any key to return to main menu: ')
+                    ret_index = index
                     break
         if flag == 0:
             print(f"Prisoner number {cell_pris_num} not found")
