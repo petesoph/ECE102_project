@@ -1,4 +1,12 @@
-Here is a helpful guide for using the HADES terminal:
+This is your helpful guide for using the HADES terminal.
+
+This platform provides for all the needs of your prison
+or other secure facility.
+
+Read further to find out how to
+use our features to control and track your prison's sensors,
+lights, alarm system, and prisoners (including our built-in
+trapdoor trigger feature):
 
 Main menu:
     Within the main menu, you will find 12 total options (0-11).
@@ -146,7 +154,7 @@ Main menu:
 
         Summary: Choose this convenient option to trapdoor any prisoner
         based on prisoner number or cell number
-        
+
 11) Help!
     Well, you're already here! Hopefully this option has done
     its job and informed you on all the features of HADES!
