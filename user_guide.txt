@@ -1,7 +1,7 @@
 Here is a helpful guide for using the HADES terminal:
 
 Main menu:
-    Within the main menu, you will find 8 total options (0-7).
+    Within the main menu, you will find 12 total options (0-11).
     Let's explore these now!
     
     (You will also find the current alarm state status, 0 or
@@ -10,9 +10,11 @@ Main menu:
     
 0) Exit
     This option quits the HADES terminal. Don't fret, though,
-    as I (HADES) will remember which lights you left on.
+    as I (HADES) will remember which lights you left on / which
+    sensors are triggered / what prisoners are in the cells /
+    if the alarmed is armed / if the alarm is active.
     
-        Summary: Quits terminal, saves light data.
+        Summary: Quits terminal, saves light/sensor/prisoner/alarm data.
         
 1) Check Sensors
     This option displays a menu of all sensors within your
@@ -27,7 +29,7 @@ Main menu:
     reliability of each sensor by triggering the alarm upon
     activation of a chosen sensor.
     
-    To choose a sensor, you will be prompet to enter the ID
+    To choose a sensor, you will be prompted to enter the ID
     of the sensor. Don't worry! A list of options will be
     provided to you. * A note: you must enter the character
     ':' after the sensor ID. That is, enter 'Windows:', not
@@ -58,11 +60,9 @@ Main menu:
     This option allows you to choose which lights within
     the prison you would like to have on or off!
     
-    To choose a light, you will be prompet to enter the name
+    To choose a light, you will be prompted to enter the name
     of the light. Don't worry! A list of options will be
-    provided to you. * A note: you must enter the character
-    ':' after the light name. That is, enter 'Main Light:', not
-    'Main Light'.
+    provided to you.
     
     Depending on the previous status of the light, you will be
     asked if you would like to change the status. Enter 'Y' or
@@ -80,13 +80,12 @@ Main menu:
     
     If the alarm is disarmed, and you would like arm the alarm,
     you will be prompted to re-enter the passcode you entered to
-    gain access to the main menu. Doing this will arm all sensors
-    (changing their status to 1). Conversely, disarming the alarm
+    gain access to the main menu. Conversely, disarming the alarm
     will disarm all sensors (including the alarm - more on this 
     below). Be careful not to mess up too many times on the 
     password entry!
     
-    Once the alarm is armed (and thus the sensors), you will gain
+    Once the alarm is armed, you will gain
     access to the features of Option 2.
     
     Lastly, if the Alarm state is triggered and on (1), you can
@@ -101,22 +100,56 @@ Main menu:
     alarm is currently armed. Once armed, this option allows 
     one to set the alarm state to 1, which will "sound the 
     alarms", triggering the buzzer as well as the emergency 
-    lights mode (with the help of some imaginationat the moment).
+    lights mode (with the help of some imagination at the moment).
     
     To disable panic mode, or turn the alarm state back to 0,
     you must disarm the alarm through Option 5, in which case
     you will be prompted to re-enter the passcode before you
-    are able to disactivate the buzzer and lights.
+    are able to deactivate the buzzer and lights.
     
     The alarm state is shown at the bottom of the main menu in 
     case you can't imagine the flashing lights and screaming
     siren when the alarm state is set to 1.   
     
         Summary: Triggers the alarm!
+
+7) Manually update a prisoner in a cell
+    Selecting this option allows you to input a new prisoner
+    into the cell of your choice. You may also enter '0' to
+    denote an empty cell. Please note that prisoner numbers must be
+    positive integers with at least 3 digits.
+
+        Summary: Manually input a new prisoner, delete a prisoner, or
+        change a prisoner number for a given cell
+
+8) Check which prisoner is in the cell
+    This option lets you input a cell number (from the list of
+    existing cells); the database will then tell you what prisoner
+    is in the cell.
+
+        Summary: Want to know who's in Cell [#]? Choose this option
+
+9) Check cell number of prisoner
+    Maybe you can remember the prisoner's number but can't quite
+    recall their cell number. Select this option to search the prisoner's
+    number; the program will return their cell number. You can also search '0'
+    to generate a list of all empty cells.
+
+        Summary: Locate a prisoner's cell, or get a list of all empty cells
+
+10) Trapdoor a prisoner
+    We're not here to question the ethics of trapdoor-ing prisoners; however,
+    our software will facilitate any trapdoor-related needs your prison has.
+    Simply select this option and input either the cell number, or the prisoner
+    number; the prisoner's trapdoor will open and send them to the mysterious
+    dungeon level. The prisoner's number will then be erased from the database.
+
+        Summary: Choose this convenient option to trapdoor any prisoner
+        based on prisoner number or cell number
         
-7) Help!
+11) Help!
     Well, you're already here! Hopefully this option has done
-    it's job and informed you on all the features of HADES!
+    its job and informed you on all the features of HADES!
     Enjoy your stay...
     
     
