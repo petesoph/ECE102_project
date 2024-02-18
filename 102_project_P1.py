@@ -29,7 +29,7 @@ def file_checker(file_name, default_array):
 
 
 # Also need to write to file before closing the program:
-def file_writer(sensors_info, lights_info, cells_info):
+def file_writer(sensors_info, lights_info, cells_info, armed_state1, alarm_state1):
     global file_names_tuple
     # Sensors info
     f = open(file_names_tuple[0], 'w')
@@ -46,6 +46,10 @@ def file_writer(sensors_info, lights_info, cells_info):
     for entry in cells_info:
         f.write(f"{entry[0]}\t{entry[1]}\n")
     f.close()
+    # Cells info
+    f = open(file_names_tuple[3], 'w')
+    f.write(f"{armed_state1}\t{alarm_state1}\n")
+    f.close()
 
 
 # Help function
@@ -60,9 +64,9 @@ def user_help():
 
 
 # Closes the program; all program closes should go through this function (so there is no sys.exit() at program end)
-def close_terminal(sensors, lights, cells):
+def close_terminal(sensors, lights, cells, armed_state2, alarm_state2):
     # First updates the files
-    file_writer(sensors, lights, cells)
+    file_writer(sensors, lights, cells, armed_state2, alarm_state2)
     print("Goodbye")
     sys.exit()
 
@@ -146,7 +150,7 @@ def arm_alarm(armed_state_func4, alarm_state_func4, sensor_func4, light, cell):
             else:
                 # Password failure triggers guard trapdoor
                 print("Out of tries")
-                guard_trapdoor(sensor_func4, light, cell)
+                guard_trapdoor(sensor_func4, light, cell, armed_state_func4, alarm_state_func4)
     else:
         usr_entry = input("The alarm is armed. Would you like to disarm it? (Y/N): ")
         if usr_entry == 'Y' or usr_entry == 'y':
@@ -168,7 +172,7 @@ def arm_alarm(armed_state_func4, alarm_state_func4, sensor_func4, light, cell):
             else:
                 # Password failure triggers guard trapdoor
                 print("Out of tries")
-                guard_trapdoor(sensor_func4, light, cell)
+                guard_trapdoor(sensor_func4, light, cell, armed_state_func4, alarm_state_func4)
     # Then return armed state
     return armed_state_func4, alarm_state_func4, sensor_func4
 
@@ -246,10 +250,10 @@ def prisoner_trapdoor(cells_prisoners):
         return cells_prisoners
 
 
-def guard_trapdoor(sensor_list, light_list, cell_list):
+def guard_trapdoor(sensor_list, light_list, cell_list, armed_state3, alarm_state3):
     # Displays a message and exits the program
     print("Guard is trapdoor-ed")
-    close_terminal(sensor_list, light_list, cell_list)
+    close_terminal(sensor_list, light_list, cell_list, armed_state3, alarm_state3)
 
 
 def check_cell(cell_pris_num, cell_array_function1, print_flag):
@@ -295,7 +299,7 @@ def check_cell(cell_pris_num, cell_array_function1, print_flag):
                 if cell_array_function1[index][1] == cell_pris_num:
                     flag = 1
                     # Don't need to check for print flag b/c this is never called from a function (always user)
-                    print(f"Prisoner number {cell_pris_num} is in cell {cell_array_function1[index][0]}")
+                    print(f"Prisoner number {cell_pris_num} is in: Cell {cell_array_function1[index][0]}")
                     if print_flag == 1:
                         input('Enter any key to return to main menu: ')
                     ret_index = index
@@ -400,7 +404,7 @@ def valid_num(sensor_data_menu, light_data_menu, cell_data_menu, armed_state_men
         elif usr_input == 11:
             user_help()
         elif usr_input == 0:
-            close_terminal(sensor_data_menu, light_data_menu, cell_data_menu)
+            close_terminal(sensor_data_menu, light_data_menu, cell_data_menu, armed_state_menu, alarm_state_menu)
     except ValueError:
         print('Invalid input. Try again.')
         valid_num(sensor_data_menu, light_data_menu, cell_data_menu, armed_state_menu, alarm_state_menu)
@@ -417,16 +421,19 @@ alarm_state = 0
 
 # Before program starts, checks if file data is available and updates lights/sensors/cells
 # File names are:
-file_names_tuple = ("sensors_file.txt", "lights_file.txt", "cells_file.txt")
+file_names_tuple = ("sensors_file.txt", "lights_file.txt", "cells_file.txt", "armed_alarm_file.txt")
 sensor_data = file_checker("sensors_file.txt", default_sensor_data)
 light_data = file_checker("lights_file.txt", default_light_data)
 cell_data = file_checker("cells_file.txt", default_cell_data)
+temp_armed_alarm = [[armed_state, alarm_state]]
+temp_armed_alarm = file_checker(file_names_tuple[3], temp_armed_alarm)
+armed_state, alarm_state = temp_armed_alarm[0][0], temp_armed_alarm[0][1]
 
 
 print('Hello, welcome to HADES:')
 print('Home Assistant, Defense, and Extermination System')
 print('Before you can access the main menu,')
-password = input('please enter the password: ')
+password = input('Please enter the password: ')
 
 attempts = 2
 
@@ -440,7 +447,7 @@ while attempts >= 0:
     else:
         # Password fail triggers guard trapdoor
         print('Password attempt limit reached...\nBON VOYAGE!')
-        guard_trapdoor(sensor_data, light_data, cell_data)
+        guard_trapdoor(sensor_data, light_data, cell_data, armed_state, alarm_state)
         
 # Then this prints the main menu of the program:
 while True:
