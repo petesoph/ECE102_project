@@ -425,9 +425,9 @@ file_names_tuple = ("sensors_file.txt", "lights_file.txt", "cells_file.txt", "ar
 sensor_data = file_checker("sensors_file.txt", default_sensor_data)
 light_data = file_checker("lights_file.txt", default_light_data)
 cell_data = file_checker("cells_file.txt", default_cell_data)
-temp_armed_alarm = [[armed_state, alarm_state]]
+temp_armed_alarm = [[str(armed_state), str(alarm_state)]]
 temp_armed_alarm = file_checker(file_names_tuple[3], temp_armed_alarm)
-armed_state, alarm_state = temp_armed_alarm[0][0], temp_armed_alarm[0][1]
+armed_state, alarm_state = int(temp_armed_alarm[0][0]), int(temp_armed_alarm[0][1])
 
 
 print('Hello, welcome to HADES:')
