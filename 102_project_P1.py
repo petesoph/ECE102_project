@@ -226,11 +226,15 @@ def prisoner_trapdoor(cells_prisoners):
     prisoner_or_cell_number = "-1"
     tries_trapdoor = 0
     while tries_trapdoor < 3 and prisoner_or_cell_number == "-1":
-        try:
-            prisoner_or_cell_number = int(input("Enter cell or prisoner number (as digits): "))
-        except ValueError:
+        prisoner_or_cell_number = input("Enter cell or prisoner number (as digits): ")
+        if any((ord(a) < 48 or ord(a) > 57) for a in prisoner_or_cell_number):
             print("Please enter digits only")
-        tries_trapdoor += 1
+            prisoner_or_cell_number = "-1"
+            tries_trapdoor += 1
+        elif prisoner_or_cell_number not in ("1", "2", "3") and int(prisoner_or_cell_number) < 99:
+            print("Only acceptable inputs are 1, 2, 3 (cell number) or a number 100 or greater (prisoner number)")
+            prisoner_or_cell_number = "-1"
+            tries_trapdoor += 1
     if tries_trapdoor == 3:
         print("Out of tries")
         input('Enter any key to return to main menu: ')
@@ -243,11 +247,7 @@ def prisoner_trapdoor(cells_prisoners):
               f" has been trapdoor-ed")
         cells_prisoners[index_val][1] = '0'
         input('Enter any key to return to main menu: ')
-        return cells_prisoners
-    else:
-        print("Invalid prisoner or cell number")
-        input('Enter any key to return to main menu: ')
-        return cells_prisoners
+    return cells_prisoners
 
 
 def guard_trapdoor(sensor_list, light_list, cell_list, armed_state3, alarm_state3):
