@@ -267,14 +267,16 @@ def check_cell(cell_pris_num, cell_array_function1, print_flag):
             cell_pris_num = input("Enter cell number (Options: 1, 2, or 3): ")
         except ValueError:
             print("Please enter a number (digits only)")
-        tries += 1
+            cell_pris_num = "-1"
+            tries += 1
 
     # Cell/pris number of -2 => menu item 9
     while tries < 3 and cell_pris_num == "-2":
         try:
-            cell_pris_num = input("Enter prisoner number (3 digits or greater, or 0 to look for empty cell): ")
+            cell_pris_num = int(input("Enter prisoner number (3 digits or greater, or 0 to look for empty cell): "))
         except ValueError:
             print("Please enter a number (digits only)")
+            cell_pris_num = "-2"
         if int(cell_pris_num) < 99 and int(cell_pris_num) != -2 and int(cell_pris_num) != 0:
             print("Prisoner numbers are always 100 or greater (or 0 for empty cell), try again")
             cell_pris_num = "-2"
@@ -462,6 +464,5 @@ while True:
     print(f'    ------------------ Alarm state: {alarm_state} ------------------')
 
     # Calls function for user menu choice
-    sensor_data, light_data, cell_data, armed_state, alarm_state = (
-        valid_num(sensor_data, light_data, cell_data, armed_state, alarm_state))
+    sensor_data, light_data, cell_data, armed_state, alarm_state = valid_num(sensor_data, light_data, cell_data, armed_state, alarm_state)
     
