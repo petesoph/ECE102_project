@@ -263,30 +263,29 @@ def check_cell(cell_pris_num, cell_array_function1, print_flag):
     ret_index = -1000
     # Cell/pris number of -1 => menu item 8
     while tries < 3 and cell_pris_num == "-1":
-        try:
-            cell_pris_num = input("Enter cell number (Options: 1, 2, or 3): ")
-        except ValueError:
-            print("Please enter a number (digits only)")
+        cell_pris_num = input("Enter cell number (Options: 1, 2, or 3): ")
+        if cell_pris_num not in ("1", "2", "3"):
+            print("Cell options are 1, 2, 3")
             cell_pris_num = "-1"
             tries += 1
 
     # Cell/pris number of -2 => menu item 9
     while tries < 3 and cell_pris_num == "-2":
-        try:
-            cell_pris_num = int(input("Enter prisoner number (3 digits or greater, or 0 to look for empty cell): "))
-        except ValueError:
-            print("Please enter a number (digits only)")
+        cell_pris_num = input("Enter prisoner number (3 digits or greater, or 0 to look for empty cell): ")
+        if any((ord(a) < 48 or ord(a) > 57) for a in cell_pris_num):
+            print("Prisoner numbers must be digits only")
             cell_pris_num = "-2"
-        if int(cell_pris_num) < 99 and int(cell_pris_num) != -2 and int(cell_pris_num) != 0:
+            tries += 1
+        elif int(cell_pris_num) < 99 and int(cell_pris_num) != -2 and int(cell_pris_num) != 0:
             print("Prisoner numbers are always 100 or greater (or 0 for empty cell), try again")
             cell_pris_num = "-2"
-        tries += 1
+            tries += 1
     if tries == 3:
         print("Out of tries")
         input('Enter any key to return to main menu: ')
         return ret_index
 
-    # First check based on prisoner number (always 3 digits or more or 0)
+    # Check based on prisoner number (always 3 digits or more or 0)
     if int(cell_pris_num) > 99 or int(cell_pris_num) == 0:
         # Put 0 as special case as multiple cells can be 0
         if int(cell_pris_num) == 0:
@@ -332,16 +331,12 @@ def check_cell(cell_pris_num, cell_array_function1, print_flag):
 def update_cell(cell_prisoner_num, cell_array_function2, update_val):
     # If cell/pris number is -1, this is the user input option
     try_val = 0
-    while try_val < 3 and cell_prisoner_num == -1:
-        try:
-            cell_prisoner_num = int(input("Enter cell number (Options: 1, 2, or 3): "))
-        except ValueError:
-            print("Please enter a number (digits only)")
-            cell_prisoner_num = -1
-        if cell_prisoner_num < 1 or cell_prisoner_num > 3:
-            print("Cell number must be 1, 2, or 3")
-            cell_prisoner_num = -1
-        try_val += 1
+    while try_val < 3 and cell_prisoner_num == "-1":
+        cell_prisoner_num = input("Enter cell number (Options: 1, 2, or 3): ")
+        if cell_prisoner_num not in ("1", "2", "3"):
+            print("Cell numbers are limited to 1, 2, 3")
+            cell_prisoner_num = "-1"
+            try_val += 1
     if try_val == 3:
         print("Out of tries")
         input('Enter any key to return to main menu: ')
@@ -349,19 +344,20 @@ def update_cell(cell_prisoner_num, cell_array_function2, update_val):
     # If update val is -1, this is the user input option
     try_val = 0
     while try_val < 3 and update_val == -1:
-        try:
-            update_val = int(input("Enter new prisoner number (3 digits or more, or put 0 for empty cell): "))
-        except ValueError:
-            print("Please enter a number (digits only)")
-        try_val += 1
-        if update_val < 100 and update_val != 0:
-            update_val = '-1'
-            print("Must be 0 or at least 3 digits, try again")
+        update_val = input("Enter new prisoner number (3 digits or more, or put 0 for empty cell): ")
+        if any((ord(a) < 48 or ord(a) > 57) for a in update_val):
+            print("Prisoner numbers must be digits only")
+            update_val = -1
+            try_val += 1
+        elif int(update_val) < 100 and int(update_val) != 0:
+            update_val = -1
+            try_val += 1
+            print("Must be 0 or at least 3 digits")
     if try_val == 3:
         print("Out of tries")
         input('Enter any key to return to main menu: ')
         return cell_array_function2
-    # First call function to get index
+    # Call function to get index
     index_num = check_cell(str(cell_prisoner_num), cell_array_function2, 0)
     if index_num != -1000:
         cell_array_function2[index_num][1] = str(update_val)
@@ -398,9 +394,9 @@ def valid_num(sensor_data_menu, light_data_menu, cell_data_menu, armed_state_men
         elif usr_input == 7:
             cell_data_menu = update_cell("-1", cell_data_menu, -1)
         elif usr_input == 8:
-            temp_var = check_cell("-1", cell_data_menu, 1)
+            temp_var1 = check_cell("-1", cell_data_menu, 1)
         elif usr_input == 9:
-            temp_var = check_cell("-2", cell_data_menu, 1)
+            temp_var2 = check_cell("-2", cell_data_menu, 1)
         elif usr_input == 10:
             cell_data_menu = prisoner_trapdoor(cell_data_menu)
         elif usr_input == 11:
