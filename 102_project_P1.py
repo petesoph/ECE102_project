@@ -116,13 +116,15 @@ def alarm_activate(armed_state_func3, alarm_state_func3, printflag):
     # First check if armed (1 = armed, 0 = not armed)
     if armed_state_func3 == 1:
         if printflag == 1:
-            answer = input('Are you sure you wish to PANIC? (Y/N): ')
+            answer = input('Are you sure you wish to PANIC? (Y/N: ')
+            while answer not in {'Y', 'y', 'N', 'n'}:
+                answer = input('Invalid input, try again.')
             if answer == 'y' or 'Y':
                 print('WEEE WOOO WEEE WOOO WEEE...')
                 alarm_state_func3 = 1
                 input('Enter any key to return to main menu: ')
-        else:
-            alarm_state_func3 = 1
+            else:
+                alarm_state_func3 = 0
     else:
         print("Cannot activate alarm, alarm not armed\n")
         input('Enter any key to return to main menu')
@@ -135,6 +137,8 @@ def arm_alarm(armed_state_func4, alarm_state_func4, sensor_func4, light, cell):
     # If alarm is off, user can arm
     if armed_state_func4 == 0:
         usr_entry = input("The alarm is not armed. Would you like to arm it? (Y/N): ")
+        while usr_entry not in {'Y', 'y', 'N', 'n'}:
+            usr_entry = input('Invalid input, try again.')
         if usr_entry == 'Y' or usr_entry == 'y':
             # Give user 3 tries to enter passcode
             pass_entry = input("Please enter the passcode: ")
@@ -153,6 +157,8 @@ def arm_alarm(armed_state_func4, alarm_state_func4, sensor_func4, light, cell):
                 guard_trapdoor(sensor_func4, light, cell, armed_state_func4, alarm_state_func4)
     else:
         usr_entry = input("The alarm is armed. Would you like to disarm it? (Y/N): ")
+        while usr_entry not in {'Y', 'y', 'N', 'n'}:
+            usr_entry = input('Invalid input, try again.')
         if usr_entry == 'Y' or usr_entry == 'y':
             # Give user 3 tries to enter passcode
             pass_entry = input("Please enter the passcode: ")
@@ -226,11 +232,15 @@ def prisoner_trapdoor(cells_prisoners):
     prisoner_or_cell_number = "-1"
     tries_trapdoor = 0
     while tries_trapdoor < 3 and prisoner_or_cell_number == "-1":
-        try:
-            prisoner_or_cell_number = int(input("Enter cell or prisoner number (as digits): "))
-        except ValueError:
+        prisoner_or_cell_number = input("Enter cell or prisoner number (as digits): ")
+        if any((ord(a) < 48 or ord(a) > 57) for a in prisoner_or_cell_number):
             print("Please enter digits only")
-        tries_trapdoor += 1
+            prisoner_or_cell_number = "-1"
+            tries_trapdoor += 1
+        elif prisoner_or_cell_number not in ("1", "2", "3") and int(prisoner_or_cell_number) < 99:
+            print("Only acceptable inputs are 1, 2, 3 (cell number) or a number 100 or greater (prisoner number)")
+            prisoner_or_cell_number = "-1"
+            tries_trapdoor += 1
     if tries_trapdoor == 3:
         print("Out of tries")
         input('Enter any key to return to main menu: ')
@@ -243,11 +253,7 @@ def prisoner_trapdoor(cells_prisoners):
               f" has been trapdoor-ed")
         cells_prisoners[index_val][1] = '0'
         input('Enter any key to return to main menu: ')
-        return cells_prisoners
-    else:
-        print("Invalid prisoner or cell number")
-        input('Enter any key to return to main menu: ')
-        return cells_prisoners
+    return cells_prisoners
 
 
 def guard_trapdoor(sensor_list, light_list, cell_list, armed_state3, alarm_state3):
