@@ -1,5 +1,11 @@
 import sys
 import os.path as path
+# Group Project - Part 1
+# ECE102
+# Prof. Sean Stalley
+# Group 4
+# Saoud Alkhamis, Logan Meadows, Sophia Peters
+# Feb 2024
 
 
 # File opener function (to open saved light info and cell info)
