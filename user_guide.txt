@@ -27,8 +27,8 @@ Main menu:
 1) Check Sensors
     This option displays a menu of all sensors within your
     prison, and whether they are each currently armed.
-    Finished reviewing the data? You can press any key to 
-    return to the main menu!
+    Finished reviewing the data? As with any option below,
+    you can press any key to return to the main menu!
 
         Summary: Displays sensors data submenu
         
@@ -39,19 +39,16 @@ Main menu:
     
     To choose a sensor, you will be prompted to enter the ID
     of the sensor. Don't worry! A list of options will be
-    provided to you. * A note: you must enter the character
-    ':' after the sensor ID. That is, enter 'Windows:', not
-    'Windows'.
+    provided to you.
     
     Upon choosing a sensor to test, if all is running smoothly,
-    you will be asked if you are sure to set the alarm off. 
-    Enter 'Y' or 'y' to continue with the process.
+    then the alarm will set off and the alarm state will set to
+    1. (Refer to Option 5 or 6 for more information regarding the
+    alarm state and how to reset it.)
     
     Lastly, if the alarm is NOT armed, you will be told that
     you must first arm the alarm. After all, if the alarm is
     off, there is nothing to trigger!
-    
-    You will then be returned to the main menu.
     
         Summary: Triggers alarm via individual sensors
                  of users choosing. Alarm must be armed.
@@ -76,9 +73,7 @@ Main menu:
     asked if you would like to change the status. Enter 'Y' or
     'y' to proceed with the action. You can always check in with
     Option 3 to remember the status of all your lights.
-    
-    You will then be returned to the main menu.
-    
+        
         Summary: Changes individual light status.
 
 5) Arm/disarm alarm
@@ -98,9 +93,7 @@ Main menu:
     
     Lastly, if the Alarm state is triggered and on (1), you can
     un-trigger the alarm by disarming it via this option.
-    
-    You will then be returned to the main menu.
-        
+            
         Summary: Changes alarm and sensor status
         
 6) PANIC!
@@ -108,7 +101,8 @@ Main menu:
     alarm is currently armed. Once armed, this option allows 
     one to set the alarm state to 1, which will "sound the 
     alarms", triggering the buzzer as well as the emergency 
-    lights mode (with the help of some imagination at the moment).
+    lights mode (with the help of some imagination without
+    the hardware).
     
     To disable panic mode, or turn the alarm state back to 0,
     you must disarm the alarm through Option 5, in which case
