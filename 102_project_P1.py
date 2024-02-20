@@ -122,8 +122,8 @@ def alarm_activate(armed_state_func3, alarm_state_func3, printflag):
                 print('WEEE WOOO WEEE WOOO WEEE...')
                 alarm_state_func3 = 1
                 input('Enter any key to return to main menu: ')
-            else:
-                alarm_state_func3 = 0
+        else:
+            alarm_state_func3 = 1
     else:
         print("Cannot activate alarm, alarm not armed\n")
         input('Enter any key to return to main menu')
