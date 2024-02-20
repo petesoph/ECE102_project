@@ -46,7 +46,7 @@ def file_writer(sensors_info, lights_info, cells_info, armed_state1, alarm_state
     for entry in cells_info:
         f.write(f"{entry[0]}\t{entry[1]}\n")
     f.close()
-    # Cells info
+    # Armed/alarm info
     f = open(file_names_tuple[3], 'w')
     f.write(f"{armed_state1}\t{alarm_state1}\n")
     f.close()
@@ -63,7 +63,7 @@ def user_help():
         print('Oops! I am having trouble fetching the help guide... You\'re on your own.')
 
 
-# Closes the program; all program closes should go through this function (so there is no sys.exit() at program end)
+# Closes the program; all program closes should go through this function (there is no sys.exit() at program end)
 def close_terminal(sensors, lights, cells, armed_state2, alarm_state2):
     # First updates the files
     file_writer(sensors, lights, cells, armed_state2, alarm_state2)
@@ -87,8 +87,9 @@ def usr_sensor_trigger(sensor_data_func2, armed_state_func2, alarm_state_func2):
     if armed_state_func2 == 1:
         # Asks for sensor ID, checks if it is a sensor
         print('Sensor list: Windows, Main Door, Cell 1, Cell 2, Cell 3, Metal Detector')
-        usr_sensor = input("Enter the ID of the sensor to be triggered: ")
         while tries < 5:
+            usr_sensor = input("Enter the ID of the sensor to be triggered: ")
+            tries += 1
             # Iterates over sensors
             for n in range(len(sensor_data_func2)):
                 if usr_sensor == sensor_data_func2[n][0]:
@@ -97,8 +98,6 @@ def usr_sensor_trigger(sensor_data_func2, armed_state_func2, alarm_state_func2):
                     print(f"{usr_sensor} activated, alarm activated")
                     input("Press any key to return to menu")
                     return sensor_data_func2, alarm_state_func2
-            usr_sensor = input("Please enter the ID of a sensor: ")
-            tries += 1
 
         if tries == 5:
             print("Out of tries!\n")
@@ -123,8 +122,8 @@ def alarm_activate(armed_state_func3, alarm_state_func3, printflag):
                 print('WEEE WOOO WEEE WOOO WEEE...')
                 alarm_state_func3 = 1
                 input('Enter any key to return to main menu: ')
-            else:
-                alarm_state_func3 = 0
+        else:
+            alarm_state_func3 = 1
     else:
         print("Cannot activate alarm, alarm not armed\n")
         input('Enter any key to return to main menu')
@@ -134,11 +133,13 @@ def alarm_activate(armed_state_func3, alarm_state_func3, printflag):
 
 # Check if alarm is armed, arm if needed
 def arm_alarm(armed_state_func4, alarm_state_func4, sensor_func4, light, cell):
+    tries = 0
     # If alarm is off, user can arm
     if armed_state_func4 == 0:
         usr_entry = input("The alarm is not armed. Would you like to arm it? (Y/N): ")
-        while usr_entry not in {'Y', 'y', 'N', 'n'}:
-            usr_entry = input('Invalid input, try again.')
+        while usr_entry not in {'Y', 'y', 'N', 'n'} and tries < 3:
+            usr_entry = input('Input must be Y or N: ')
+            tries += 1
         if usr_entry == 'Y' or usr_entry == 'y':
             # Give user 3 tries to enter passcode
             pass_entry = input("Please enter the passcode: ")
@@ -156,9 +157,11 @@ def arm_alarm(armed_state_func4, alarm_state_func4, sensor_func4, light, cell):
                 print("Out of tries")
                 guard_trapdoor(sensor_func4, light, cell, armed_state_func4, alarm_state_func4)
     else:
+        tries = 0
         usr_entry = input("The alarm is armed. Would you like to disarm it? (Y/N): ")
-        while usr_entry not in {'Y', 'y', 'N', 'n'}:
-            usr_entry = input('Invalid input, try again.')
+        while usr_entry not in {'Y', 'y', 'N', 'n'} and tries < 3:
+            usr_entry = input('Input must be Y or N: ')
+            tries += 1
         if usr_entry == 'Y' or usr_entry == 'y':
             # Give user 3 tries to enter passcode
             pass_entry = input("Please enter the passcode: ")
@@ -208,7 +211,7 @@ def light_off_on(light_data_vals):
         if light_data_vals[light_index][1] == "ON":
             lights_y_n = input("The light is ON. Would you like to turn it OFF? (Y/N): ")
             while lights_y_n not in {'Y', 'y', 'N', 'n'}:
-                lights_y_n = input('Invalid input, try again.')
+                lights_y_n = input('Invalid input, try again: ')
             if lights_y_n == 'Y' or lights_y_n == 'y':
                 light_data_vals[light_index][1] = "OFF"
                 print(f"{light_name} turned off")
@@ -216,7 +219,7 @@ def light_off_on(light_data_vals):
         else:
             lights_y_n = input("The light is OFF. Would you like to turn it ON? (Y/N): ")
             while lights_y_n not in {'Y', 'y', 'N', 'n'}:
-                lights_y_n = input('Invalid input, try again.')
+                lights_y_n = input('Invalid input, try again: ')
             if lights_y_n == 'Y' or lights_y_n == 'y':
                 light_data_vals[light_index][1] = "ON"
                 print(f"{light_name} turned on")
@@ -250,7 +253,7 @@ def prisoner_trapdoor(cells_prisoners):
     index_val = check_cell(str(prisoner_or_cell_number), cells_prisoners, 0)
     if index_val != -1000:
         print(f"Prisoner number {cells_prisoners[index_val][1]} in cell number {cells_prisoners[index_val][0]}"
-              f" has been trapdoor-ed")
+              f" has been trapdoored")
         cells_prisoners[index_val][1] = '0'
         input('Enter any key to return to main menu: ')
     return cells_prisoners
@@ -258,7 +261,7 @@ def prisoner_trapdoor(cells_prisoners):
 
 def guard_trapdoor(sensor_list, light_list, cell_list, armed_state3, alarm_state3):
     # Displays a message and exits the program
-    print("Guard is trapdoor-ed")
+    print("You have been trapdoored")
     close_terminal(sensor_list, light_list, cell_list, armed_state3, alarm_state3)
 
 
@@ -305,9 +308,8 @@ def check_cell(cell_pris_num, cell_array_function1, print_flag):
                 # Shouldn't need to validate as integer as update function does this
                 if cell_array_function1[index][1] == cell_pris_num:
                     flag = 1
-                    # Don't need to check for print flag b/c this is never called from a function (always user)
-                    print(f"Prisoner number {cell_pris_num} is in: Cell {cell_array_function1[index][0]}")
                     if print_flag == 1:
+                        print(f"Prisoner number {cell_pris_num} is in: Cell {cell_array_function1[index][0]}")
                         input('Enter any key to return to main menu: ')
                     ret_index = index
                     break
