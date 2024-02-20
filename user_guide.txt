@@ -1,3 +1,10 @@
+Group Project - Part 1
+ECE102
+Prof. Sean Stalley
+Group 4
+Saoud Alkhamis, Logan Meadows, Sophia Peters
+Feb 2024
+
 This is your helpful guide for using the HADES terminal.
 
 This platform provides for all the needs of your prison
