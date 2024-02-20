@@ -116,13 +116,15 @@ def alarm_activate(armed_state_func3, alarm_state_func3, printflag):
     # First check if armed (1 = armed, 0 = not armed)
     if armed_state_func3 == 1:
         if printflag == 1:
-            answer = input('Are you sure you wish to PANIC? (Y/N): ')
+            answer = input('Are you sure you wish to PANIC? (Y/N: ')
+            while answer not in {'Y', 'y', 'N', 'n'}:
+                answer = input('Invalid input, try again.')
             if answer == 'y' or 'Y':
                 print('WEEE WOOO WEEE WOOO WEEE...')
                 alarm_state_func3 = 1
                 input('Enter any key to return to main menu: ')
-        else:
-            alarm_state_func3 = 1
+            else:
+                alarm_state_func3 = 0
     else:
         print("Cannot activate alarm, alarm not armed\n")
         input('Enter any key to return to main menu')
@@ -135,6 +137,8 @@ def arm_alarm(armed_state_func4, alarm_state_func4, sensor_func4, light, cell):
     # If alarm is off, user can arm
     if armed_state_func4 == 0:
         usr_entry = input("The alarm is not armed. Would you like to arm it? (Y/N): ")
+        while usr_entry not in {'Y', 'y', 'N', 'n'}:
+            usr_entry = input('Invalid input, try again.')
         if usr_entry == 'Y' or usr_entry == 'y':
             # Give user 3 tries to enter passcode
             pass_entry = input("Please enter the passcode: ")
@@ -153,6 +157,8 @@ def arm_alarm(armed_state_func4, alarm_state_func4, sensor_func4, light, cell):
                 guard_trapdoor(sensor_func4, light, cell, armed_state_func4, alarm_state_func4)
     else:
         usr_entry = input("The alarm is armed. Would you like to disarm it? (Y/N): ")
+        while usr_entry not in {'Y', 'y', 'N', 'n'}:
+            usr_entry = input('Invalid input, try again.')
         if usr_entry == 'Y' or usr_entry == 'y':
             # Give user 3 tries to enter passcode
             pass_entry = input("Please enter the passcode: ")
