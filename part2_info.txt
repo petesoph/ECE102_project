@@ -1,0 +1,58 @@
+This is just a text document to show some structure and provide references for the program
+It will be structured more towards a C approach but could be applied to either C or Python
+It will also assume the use of the GPIO breakout board (I2C expander)
+
+#############################################################
+LINKS:
+Adafruit repo for breakout board MCP23017:
+https://github.com/adafruit/Adafruit-MCP23017-Arduino-Library/tree/master
+
+Blog post comparig polling to interrupt (interrupt is generally better for sensors if possible)
+https://www.geeksforgeeks.org/difference-between-interrupt-and-polling/
+
+Adafruit example for interrupt w/ MCP23017:
+https://github.com/adafruit/Adafruit-MCP23017-Arduino-Library/blob/master/examples/mcp23xxx_interrupt/mcp23xxx_interrupt.ino
+
+More helpful tutorial on interrupts (likely the best method for our case is the interrupt hands a flag to main, and main polls this flag and does stuff with it):
+https://roboticsbackend.com/arduino-interrupts/
+
+Another interrupts example (response post #3 in link):
+https://forum.arduino.cc/t/interrupt-by-flag/461352/3
+
+Adafruit blog post on debouncing:
+https://learn.adafruit.com/make-it-switch/debouncing
+
+Arduino sensors tutorial:
+https://www.allaboutcircuits.com/projects/reading-sensors-with-an-arduino/
+#############################################################
+[include/import statements]
+
+[code header (course name & #, names, group #, date, prof name, program description, etc)]
+
+[set pin name variables = #s]
+
+[void setup function (for GPIO breakout); initializes I2C, defines pins as input/output, can also set pins as interrupt (more efficient than polling), sets behavior for interrupt]
+
+[main body]
+[loop continuously]
+1. Call password validation function
+2. Set flag variable; poll flag variable; if it is 1, call func. 7 and also reset flag to 0
+Note: on interrupt, changes sensor state in sensor value array, and sets poll flag variable to 1 (set in setup)
+3. Display menu, prompt for user input, call functions based on input
+Functions called from main: 3, 4, 5, 6, 8, 11
+
+[define other functions]
+Function list (could be changed if there're better ways to do the function):
+1. Prompt for password and validate: define analog input values each at increments of 10% of max (e.g. 6550, 13100, 19650, etc); read input from one pin, compare against values, to convert to characters, read either 4 values or until a certain character is pressed (might require 11 buttons not 10); should debounce as well
+2. Print out menu (but better to handle user choice in main)
+3, Alarm arm/disarm: prompt for arm/disarm, calls password validation function, returns alarm state to main
+4. Trapdoor a prisoner: pass in trapdoor_val variable (see function 9); give cell options 1, 2, 3 (for simplicity no files/prisoner names/etc); move trapdoor from the function (PWM servo 90 deg, then back to start position); call reset trapdoor counter function (see function 9), return trapdoor_val to main
+5. Open/close front door: prompt if guard wants to open door, move door from function (PWM servo 90 deg, then back to start position), return to main
+6. Zone enable/disable: pass in array w/ list of sensors (Front door, interior main, windows, cell 1 door, cell 2 door, cell 3 door) and alarm state, prompt to enable/disable, make changes to array (**cannot enable if alarm disabled) and pass back to main
+7. Set off alarm: pass in sensor states array and sensor enable/disable array, if sensor is triggered and enabled, set off alarm
+8. Set LEDs: pass in LED array (cell 1, cell 2, cell 3), prompt user for change, change array and pass back to main
+9. Reset trapdoor counter: we have a (hardware) 1-digit display; will be labeled as 'days since last trapdoor incident'; this function is called from function 4; resets the display to 0 
+10. Trapdoor display: pass in trapdoor_val, change display value every minute or so to show functioning during demo (see example in LINKS section)
+11. Quit: shuts down lights, quits program
+
+*I think that's it, but ofc any of these can be different if there's a better way to implement
