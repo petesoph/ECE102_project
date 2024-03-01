@@ -39,7 +39,7 @@ https://www.allaboutcircuits.com/projects/reading-sensors-with-an-arduino/
 2. Set flag variable; poll flag variable; if it is 1, call func. 7 and also reset flag to 0
 Note: on interrupt, changes sensor state in sensor value array, and sets poll flag variable to 1 (set in setup)
 3. Display menu, prompt for user input, call functions based on input
-Functions called from main: 3, 4, 5, 6, 8, 11
+Functions called from main: 3, 4, 5, 6, 8, 11, 12
 
 [define other functions]
 Function list (could be changed if there're better ways to do the function):
@@ -53,6 +53,7 @@ Function list (could be changed if there're better ways to do the function):
 8. Set LEDs: pass in LED array (cell 1, cell 2, cell 3), prompt user for change, change array and pass back to main
 9. Reset trapdoor counter: we have a (hardware) 1-digit display; will be labeled as 'days since last trapdoor incident'; this function is called from function 4; resets the display to 0 
 10. Trapdoor display: pass in trapdoor_val, change display value every minute or so to show functioning during demo (see example in LINKS section)
-11. Quit: shuts down lights, quits program
+11. Print user guide
+12. Quit: shuts down lights, quits program
 
 *I think that's it, but ofc any of these can be different if there's a better way to implement
