@@ -1,3 +1,164 @@
-This is the user guide
+Group Project - Part 1
+ECE102
+Prof. Sean Stalley
+Group 4
+Saoud Alkhamis, Logan Meadows, Sophia Peters
+Feb 2024
 
-Will add the info after the rest of the code is done
+This is your helpful guide for using the HADES terminal.
+
+This platform provides for all the needs of your prison
+or other secure facility.
+
+Read further to find out how to
+use our features to control and track your prison's sensors,
+lights, alarm system, and prisoners (including our built-in
+trapdoor trigger feature):
+
+Main menu:
+    Within the main menu, you will find 12 total options (0-11).
+    Let's explore these now!
+    
+    (You will also find the current alarm state status, 0 or
+    1, at the bottom of the main menu page. More on this in
+    Option 6).
+    
+0) Exit
+    This option quits the HADES terminal. Don't fret, though,
+    as I (HADES) will remember which lights you left on / which
+    sensors are triggered / what prisoners are in the cells /
+    if the alarmed is armed / if the alarm is active.
+    
+        Summary: Quits terminal, saves light/sensor/prisoner/alarm data.
+        
+1) Check Sensors
+    This option displays a menu of all sensors within your
+    prison, and whether they are each currently armed.
+    Finished reviewing the data? As with any option below,
+    you can press any key to return to the main menu!
+
+        Summary: Displays sensors data submenu
+        
+2) Trigger Sensors
+    If the alarm is armed, this option allows you to test the
+    reliability of each sensor by triggering the alarm upon
+    activation of a chosen sensor.
+    
+    To choose a sensor, you will be prompted to enter the ID
+    of the sensor. Don't worry! A list of options will be
+    provided to you.
+    
+    Upon choosing a sensor to test, if all is running smoothly,
+    then the alarm will set off and the alarm state will set to
+    1. (Refer to Option 5 or 6 for more information regarding the
+    alarm state and how to reset it.)
+    
+    Lastly, if the alarm is NOT armed, you will be told that
+    you must first arm the alarm. After all, if the alarm is
+    off, there is nothing to trigger!
+    
+        Summary: Triggers alarm via individual sensors
+                 of users choosing. Alarm must be armed.
+
+3) Check lights
+    This option displays a menu of all lights within your
+    prison, and whether they are each currently on/off.
+    Finished reviewing the status of your lights? You can
+    press any key to return to the main menu!
+
+        Summary: Displays lights data submenu
+        
+4) Turn lights off/on
+    This option allows you to choose which lights within
+    the prison you would like to have on or off!
+    
+    To choose a light, you will be prompted to enter the name
+    of the light. Don't worry! A list of options will be
+    provided to you.
+    
+    Depending on the previous status of the light, you will be
+    asked if you would like to change the status. Enter 'Y' or
+    'y' to proceed with the action. You can always check in with
+    Option 3 to remember the status of all your lights.
+        
+        Summary: Changes individual light status.
+
+5) Arm/disarm alarm
+    This option both provides you with the current status of the
+    alarm system, and then asks if you would like to change that
+    status.
+    
+    If the alarm is disarmed, and you would like arm the alarm,
+    you will be prompted to re-enter the passcode you entered to
+    gain access to the main menu. Conversely, disarming the alarm
+    will disarm all sensors (including the alarm - more on this 
+    below). Be careful not to mess up too many times on the 
+    password entry!
+    
+    Once the alarm is armed, you will gain
+    access to the features of Option 2.
+    
+    Lastly, if the Alarm state is triggered and on (1), you can
+    un-trigger the alarm by disarming it via this option.
+            
+        Summary: Changes alarm and sensor status
+        
+6) PANIC!
+    Much like option 2, this option is only available if the
+    alarm is currently armed. Once armed, this option allows 
+    one to set the alarm state to 1, which will "sound the 
+    alarms", triggering the buzzer as well as the emergency 
+    lights mode (with the help of some imagination without
+    the hardware).
+    
+    To disable panic mode, or turn the alarm state back to 0,
+    you must disarm the alarm through Option 5, in which case
+    you will be prompted to re-enter the passcode before you
+    are able to deactivate the buzzer and lights.
+    
+    The alarm state is shown at the bottom of the main menu in 
+    case you can't imagine the flashing lights and screaming
+    siren when the alarm state is set to 1.   
+    
+        Summary: Triggers the alarm!
+
+7) Manually update a prisoner in a cell
+    Selecting this option allows you to input a new prisoner
+    into the cell of your choice. You may also enter '0' to
+    denote an empty cell. Please note that prisoner numbers must be
+    positive integers with at least 3 digits.
+
+        Summary: Manually input a new prisoner, delete a prisoner, or
+        change a prisoner number for a given cell
+
+8) Check which prisoner is in the cell
+    This option lets you input a cell number (from the list of
+    existing cells); the database will then tell you what prisoner
+    is in the cell.
+
+        Summary: Want to know who's in Cell [#]? Choose this option
+
+9) Check cell number of prisoner
+    Maybe you can remember the prisoner's number but can't quite
+    recall their cell number. Select this option to search the prisoner's
+    number; the program will return their cell number. You can also search '0'
+    to generate a list of all empty cells.
+
+        Summary: Locate a prisoner's cell, or get a list of all empty cells
+
+10) Trapdoor a prisoner
+    We're not here to question the ethics of trapdoor-ing prisoners; however,
+    our software will facilitate any trapdoor-related needs your prison has.
+    Simply select this option and input either the cell number, or the prisoner
+    number; the prisoner's trapdoor will open and send them to the mysterious
+    dungeon level. The prisoner's number will then be erased from the database.
+
+        Summary: Choose this convenient option to trapdoor any prisoner
+        based on prisoner number or cell number
+
+11) Help!
+    Well, you're already here! Hopefully this option has done
+    its job and informed you on all the features of HADES!
+    Enjoy your stay...
+    
+    
